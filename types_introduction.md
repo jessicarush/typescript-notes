@@ -4,7 +4,14 @@
 
 <!-- toc -->
 
-- [Primitive types](#primitive-types)
+- [Primitive (basic) types](#primitive-basic-types)
+- [Arrays](#arrays)
+- [Tuples](#tuples)
+- [Functions](#functions)
+- [Any and unknown](#any-and-unknown)
+- [Type aliases](#type-aliases)
+- [never ?](#never-)
+- [Enums ?](#enums-)
 
 <!-- tocstop -->
 
