@@ -10,8 +10,10 @@
 - [Functions](#functions)
 - [Any and unknown](#any-and-unknown)
 - [Type aliases](#type-aliases)
-- [never ?](#never-)
-- [Enums ?](#enums-)
+- [Function](#function)
+- [void](#void)
+- [never](#never)
+- [Enums](#enums)
 
 <!-- tocstop -->
 
@@ -52,6 +54,7 @@ TypeScript adds its own basic types:
 - tuples
 - any
 - unknown
+- void
 - never
 - Enums
 
@@ -214,10 +217,10 @@ if (typeof result === 'string' || typeof result === 'number') {
 
 ## Type aliases 
 
-Type aliases give us a way to create a new name for a type or to define the shape of an object. Type aliases are often used for complex types that you want to reuse throughout your code. To define a type alias use the `type` keyword:
+Type aliases give us a way to create a custom type or to define the shape of an object. Type aliases are often used for complex types that you want to reuse throughout your code. To define a type alias use the `type` keyword. When naming the type, then convention seems to be `UpperCamelCase` but it is not enforced in TypeScript itself:
 
 ```typescript
-type MyType = string | number;
+type Theme = 'dark' | 'light';
 ```
 
 Here we're defining an object:
@@ -233,9 +236,105 @@ function drawPoint(point: Point) {
 }
 ```
 
+Note the use of semi-colons `;` instead of commas `,`. Also:
 
+```typescript
+// Types can be used within types:
+type Theme = 'light' | 'dark' | 'medium';
 
+// A property can be marked as optional using `?`
+type User = {
+  id: number;
+  name: string;
+  theme: Theme;
+  greeting?: () => void;
+};
 
-## never ?
+// An object that uses the custom type (without optional function)
+const user1: User = {
+  id: 1,
+  name: 'John',
+  theme: 'dark'
+};
 
-## Enums ?
+// An object that uses the custom type (with optional function)
+const user2: User = {
+  id: 2,
+  name: 'Bob',
+  theme: 'medium',
+  greeting: () => {
+    console.log('Hello');
+  }
+};
+
+// The type can be defined inline as well:
+const admin: {
+  id: number;
+  name: string;
+  theme: Theme;
+  roles: string[];
+} = {
+  id: 1,
+  name: 'Mary',
+  theme: 'light',
+  roles: ['Developer', 'Lead']
+};
+
+// Note that when passing a type like this, TypeScript is not checking to see
+// that the parameter IS of type User, but that it contains the same properties 
+// of type User. For this reason, we can call `greetUser()` with `admin`.
+function greetUser(user: User) {
+  console.log('Hi ' + user.name);
+  if (user.greeting) {
+    user.greeting();
+  }
+}
+
+greetUser(user1);  // Hi John
+greetUser(user2);  // Hi Bob; Hello
+greetUser(admin);  // Hi Mary
+```
+
+## Function
+
+The global type `Function` describes properties like bind, call, apply, and others present on all function values in JavaScript. It also has the special property that values of type `Function` can always be called; these calls return `any`:
+
+```typescript
+function doSomething(f: Function) {
+  return f(1, 2, 3);
+}
+```
+
+This is an untyped function call and is generally best avoided because of the unsafe `any` return type.
+
+If you need to accept an arbitrary function but don’t intend to call it, the type `() => void` is generally safer.
+
+## void
+
+`void` represents the return value of functions which don’t return a value. It’s the inferred type any time a function doesn’t have any return statements, or doesn’t return any explicit value from those return statements:
+
+```typescript
+// The inferred return type is void
+function noop() {
+  return;
+}
+
+```
+
+In JavaScript, a function that doesn’t return any value will implicitly return the value undefined. However, void and undefined are not the same thing in TypeScript.
+
+## never
+
+Some functions never return a value:
+
+```typescript
+function fail(msg: string): never {
+  throw new Error(msg);
+}
+```
+
+The `never` type represents values which are never observed. In a return type, this means that the function throws an exception or terminates execution of the program.
+
+## Enums
+
+> Enums are a feature added to JavaScript by TypeScript which allows for describing a value which could be one of a set of possible named constants. Unlike most TypeScript features, this is not a type-level addition to JavaScript but something added to the language and runtime. Because of this, it’s a feature which you should know exists, but maybe hold off on using unless you are sure.
