@@ -25,3 +25,5 @@ Use these options to specify the source and output directories:
   }
 }
 ```
+
+Note, this only works if you run `npx tsc`. If you run `npx tsc filename.ts`, you will have to navigate to `src` first and it will put the output in the same directory.

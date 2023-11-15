@@ -4,6 +4,18 @@ TypeScript is a superset of JavaScript that adds *static typing* and other featu
 
 *Static typing* is a feature in programming languages where variable types are explicitly declared and are checked at compile-time. This allows for errors related to type mismatches to be caught early in the development process, enhancing code reliability and maintainability before the program is run.
 
+## Table of contents
+
+<!-- toc -->
+
+- [Install](#install)
+- [Errors](#errors)
+- [Compile](#compile)
+- [ts-node](#ts-node)
+- [tsconfig.json](#tsconfigjson)
+
+<!-- tocstop -->
+
 ## Install
 
 You can install npm per project:
@@ -30,12 +42,14 @@ To run the compiler if TypeScript is installed in the project:
 
 ```
 npx tsc filename.ts
+npx tsc
 ```
 
 To run the compiler if TypeScript is installed globally:
 
 ```
 tsc filename.ts
+tsc
 ```
 
 This will create a `.js` file using the same name.
