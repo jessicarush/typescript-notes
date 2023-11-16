@@ -8,6 +8,7 @@
 - [Arrays](#arrays)
 - [Tuples](#tuples)
 - [Functions](#functions)
+- [Classes](#classes)
 - [Any and unknown](#any-and-unknown)
 - [Type aliases](#type-aliases)
 - [Function](#function)
@@ -123,19 +124,23 @@ TypeScript functions let you define the type for the function's parameters as we
 // At the very least, I have to tell it what type the parameter is since 
 // it can't be inferred. The return value however, could be inferred:
 function greet(name: string) {
-    return ('Hello ' + name)
+  return `Hello ${name}`;
 }
 // If I want to explicitly express the return value:
 function greet(name: string): string {
-    return ('Hello ' + name)
+  return `Hello ${name}`;
 }
 // As a function expression:
 const greet = (name: string): string => {
-  return 'Hello ' + name;
+  return `Hello ${name}`;
 };
 // If you use default params, the parameter type can be inferred:
 function greet(name = 'Friend') {
-  console.log('Hello ' + name);
+  return `Hello ${name}`;
+}
+// You can include optional params with `?`:
+function greet(name: string, greeting?: string) {
+  return `${greeting || 'Hello'} ${name}`;
 }
 ```
 
@@ -172,6 +177,42 @@ function greetMultiple(names: string[]) {
 // and pass an array param:
 greetMultiple(['John']);
 greetMultiple(['John', 'Mary']);
+```
+
+## Classes 
+
+```typescript
+class Contact {
+  // These type declarations are for TypeScript to know what properties 
+  // and types should be on instances of the class.
+  name: string;
+  email: string;
+
+  // These types are specfially checking the args passed in when the 
+  // instance in created.
+  constructor(name: string, email: string) {
+    this.name = name;
+    this.email = email;
+  }
+
+  greeting(day: string) {
+      console.log(`Hello ${this.name}, happy ${day}!`);
+  }
+}
+```
+
+TypeScript has `public` keyword which can be used as a shorthand syntax that allows you to declare and initialize class properties directly in the constructor parameters:
+
+```typescript
+class Contact {
+  constructor(public name: string, public email: string) {
+    // No need for explicit property initialization
+  }
+
+  greeting(day: string) {
+    console.log(`Hello ${this.name}, happy ${day}!`);
+  }
+}
 ```
 
 ## Any and unknown

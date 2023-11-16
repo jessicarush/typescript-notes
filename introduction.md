@@ -9,16 +9,17 @@ TypeScript is a superset of JavaScript that adds *static typing* and other featu
 <!-- toc -->
 
 - [Install](#install)
+- [tsconfig.json](#tsconfigjson)
 - [Errors](#errors)
 - [Compile](#compile)
 - [ts-node](#ts-node)
-- [tsconfig.json](#tsconfigjson)
+- [@types/node](#typesnode)
 
 <!-- tocstop -->
 
 ## Install
 
-You can install npm per project:
+You can install npm per project (`npm init`):
 
 ```
 npm install typescript --save-dev
@@ -31,6 +32,26 @@ or globally:
 npm install -g typescript
 tsc --version
 ```
+
+## tsconfig.json
+
+The `tsconfig.json` file specifies the *root files* and the *compiler options* required to compile the project. This configuration file allows developers to control how the TypeScript compiler behaves, defining settings such as the target ECMAScript version, module resolution, and various checks and constraints to enforce during the compilation process.
+
+If TypeScript is installed at the project level run:
+
+```
+npx tsc --init
+```
+
+or if TypeScript is installed globally: 
+
+```
+tsc --init
+``` 
+
+This will initialize the `tsconfig.json` in your project folder.
+
+See [tsconfig.md](tsconfig.md).
 
 ## Errors 
 
@@ -66,15 +87,15 @@ This allows you to run TypeScript files directly in node without compiling them 
 ts-node filename.ts
   ```
 
-## tsconfig.json
+## @types/node
 
-ChatGPT
+```typescript
+import { randomBytes } from 'crypto';
+```
 
-The `tsconfig.json` file specifies the *root files* and the *compiler options* required to compile the project. This configuration file allows developers to control how the TypeScript compiler behaves, defining settings such as the target ECMAScript version, module resolution, and various checks and constraints to enforce during the compilation process.
+When using Node.js-specific modules like `crypto` in a TypeScript project, you need to install `@types/node` so that TypeScript can understand the types from these Node.js modules. This is a standard practice for using Node.js modules in TypeScript.
 
-Run `npx tsc --init` or `tsc --init` to initialize the `tsconfig.json` in your project folder.
-
-See [tsconfig.md](tsconfig.md).
-
-
+```
+npm install @types/node --save-dev
+```
 
