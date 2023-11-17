@@ -8,9 +8,9 @@
 - [Arrays](#arrays)
 - [Tuples](#tuples)
 - [Functions](#functions)
-- [Classes](#classes)
 - [Any and unknown](#any-and-unknown)
 - [Type aliases](#type-aliases)
+- [Type interfaces](#type-interfaces)
 - [Function](#function)
 - [void](#void)
 - [never](#never)
@@ -179,42 +179,6 @@ greetMultiple(['John']);
 greetMultiple(['John', 'Mary']);
 ```
 
-## Classes 
-
-```typescript
-class Contact {
-  // These type declarations are for TypeScript to know what properties 
-  // and types should be on instances of the class.
-  name: string;
-  email: string;
-
-  // These types are specfially checking the args passed in when the 
-  // instance in created.
-  constructor(name: string, email: string) {
-    this.name = name;
-    this.email = email;
-  }
-
-  greeting(day: string) {
-      console.log(`Hello ${this.name}, happy ${day}!`);
-  }
-}
-```
-
-TypeScript has `public` keyword which can be used as a shorthand syntax that allows you to declare and initialize class properties directly in the constructor parameters:
-
-```typescript
-class Contact {
-  constructor(public name: string, public email: string) {
-    // No need for explicit property initialization
-  }
-
-  greeting(day: string) {
-    console.log(`Hello ${this.name}, happy ${day}!`);
-  }
-}
-```
-
 ## Any and unknown
 
 The `any` type is used to completely disable any type checking:
@@ -258,7 +222,9 @@ if (typeof result === 'string' || typeof result === 'number') {
 
 ## Type aliases 
 
-Type aliases give us a way to create a custom type or to define the shape of an object. Type aliases are often used for complex types that you want to reuse throughout your code. To define a type alias use the `type` keyword. When naming the type, then convention seems to be `UpperCamelCase` but it is not enforced in TypeScript itself:
+Type aliases give us a way to create a custom type or to define the shape of an object. Type aliases are often used for complex types that you want to reuse throughout your code. They can represent a wide range of types, including primitives, unions, and tuples. However, they cannot be extended or implemented from (i.e., they are closed to modification after their declaration).
+
+To define a type alias use the `type` keyword. When naming the type, then convention seems to be `UpperCamelCase` but it is not enforced in TypeScript itself:
 
 ```typescript
 type Theme = 'dark' | 'light';
@@ -280,7 +246,7 @@ function drawPoint(point: Point) {
 Note the use of semi-colons `;` instead of commas `,`. Also:
 
 ```typescript
-// Types can be used within types:
+// Types aliases can be used within other types:
 type Theme = 'light' | 'dark' | 'medium';
 
 // A property can be marked as optional using `?`
@@ -308,7 +274,7 @@ const user2: User = {
   }
 };
 
-// The type can be defined inline as well:
+// A type defined inline is considered anonymous:
 const admin: {
   id: number;
   name: string;
@@ -335,6 +301,28 @@ greetUser(user1);  // Hi John
 greetUser(user2);  // Hi Bob; Hello
 greetUser(admin);  // Hi Mary
 ```
+
+## Type interfaces
+
+Type interfaces are similar to type aliases, but there are a few differences:
+
+- Syntax: Defined using the `interface` keyword. Also note no assignment `=`.
+- Use Case: Primarily used for defining the shape of objects (not unions or tuples).
+- Extension: Can be extended or implemented by other interfaces or classes (i.e., they are open and can be augmented).
+
+
+```typescript
+interface Point {
+  x: number;
+  y: number;
+};
+
+function drawPoint(point: Point) {
+  // Function implementation
+}
+```
+
+Use *type aliases* when you need to describe a type that might not be an object or when you need a union or tuple type. Use *interfaces* when you want to define the shape of objects and need the ability to extend or implement them in other interfaces or classes. 
 
 ## Function
 
