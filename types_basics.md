@@ -4,17 +4,18 @@
 
 <!-- toc -->
 
-  * [Literal types](#literal-types)
-  * [Union types](#union-types)
-  * [Default values with types](#default-values-with-types)
-  * [Type narrowing ()](#type-narrowing-)
-  * [Type predicates and type assertion](#type-predicates-and-type-assertion)
-  * [Optional values](#optional-values)
-  * [Type interfaces](#type-interfaces)
-  * [Type intersection](#type-intersection)
+- [Literal types](#literal-types)
+- [Union types](#union-types)
+- [Default values with types](#default-values-with-types)
+- [Call signatures](#call-signatures)
+- [Type narrowing ()](#type-narrowing-)
+- [Type predicates and type assertion](#type-predicates-and-type-assertion)
+- [Optional values](#optional-values)
+- [Type interfaces](#type-interfaces)
+- [Type intersection](#type-intersection)
 - [Type interface extension vs type alias intersection](#type-interface-extension-vs-type-alias-intersection)
-  * [Enums](#enums)
-  * [never](#never)
+- [Enums](#enums)
+- [never](#never)
 
 <!-- tocstop -->
 
@@ -42,6 +43,52 @@ function getTheme(theme: 'dark' | 'light' = 'dark' ): void {
   }
 }
 ```
+
+## Call signatures
+
+While I don't forsee wanting to do this, it should be noted that you can define a function's *call signature* in a separate type alias or interface, for example:
+
+```typescript
+type ThemeFunction = {
+  (theme: 'dark' | 'light'): void;
+}
+
+// interface ThemeFunction {
+//   (theme: 'dark' | 'light'): void;
+// }
+
+const getTheme: ThemeFunction = (theme = 'dark') => {
+  if (theme === 'dark') {
+    // do something
+  }
+  if (theme === 'light') {
+    // do something
+  }
+}
+```
+
+That syntax seen in the Type alias and interface above is specifically a function call signature, not to be confused with a *method signature*:
+
+```typescript
+interface Example1 {
+  id: number;
+  // method signature
+  greet: (name: string) => void;
+}
+
+interface Example2 {
+  id: number;
+  // method signature - shorthand syntax
+  greet(name: string): void;
+}
+
+interface Example3 {
+  // function call signature
+  (name: string): void;
+}
+```
+
+Note that if a Type alias or interface defines a function call signature, you will not have other properties in there as it would just require the function to also have those properties which we never really do in JavaScript (even though technically you can).
 
 ## Type narrowing ()
 
@@ -453,7 +500,7 @@ let complicatedJob: ComplicatedJob = {
 }
 ```
 
-# Type interface extension vs type alias intersection
+## Type interface extension vs type alias intersection
 
 > We just looked at two ways to combine types which are similar, but are actually subtly different. With interfaces, we could use an `extends` clause to extend from other types, and we were able to do something similar with intersections and name the result with a *type alias*. The principal difference between the two is how conflicts are handled, and that difference is typically one of the main reasons why you’d pick one over the other between an interface and a type alias of an intersection type.
 

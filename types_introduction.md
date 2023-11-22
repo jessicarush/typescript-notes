@@ -11,7 +11,7 @@
 - [Any and unknown](#any-and-unknown)
 - [Type aliases](#type-aliases)
 - [Type interfaces](#type-interfaces)
-- [Function](#function)
+- [Function type](#function-type)
 - [void](#void)
 - [never](#never)
 - [Enums](#enums)
@@ -122,7 +122,7 @@ TypeScript functions let you define the type for the function's parameters as we
 
 ```typescript
 // At the very least, I have to tell it what type the parameter is since 
-// it can't be inferred. The return value however, could be inferred:
+// it can't be inferred. The return value however, can be inferred:
 function greet(name: string) {
   return `Hello ${name}`;
 }
@@ -139,10 +139,12 @@ function greet(name = 'Friend') {
   return `Hello ${name}`;
 }
 // You can include optional params with `?`:
-function greet(name: string, greeting?: string) {
+function greet(name: string, greeting?: string): string {
   return `${greeting || 'Hello'} ${name}`;
 }
 ```
+
+Note this patten: `(name: string): string` is often referred to as a function's *call signature*.
 
 So, should you let the return value be inferred or explicitly define it?
 
@@ -150,12 +152,31 @@ So, should you let the return value be inferred or explicitly define it?
 - **Complex Functions**: In more complex functions, or in codebases that prioritize explicit type annotations for clarity and maintainability, the explicit return type (second approach) is preferred.
 - **Project or Team Standards**: The choice can also depend on the coding standards of a project or team. Some teams might enforce explicit types for consistency and clarity, while others might opt for the brevity of implicit types where appropriate.
 
+Note the type is can also be inferred when the function is called:
+
 ```typescript
-// Since the function has been defined, the type will get inferred here:
-let greeting = greet('John');
+function greet(name: string): string {
+  return `Hello ${name}`;
+}
+
+let myGreet = greet; // inferred type 
+
+let myGreeting = myGreet('Sue'); // inferred type
 ```
 
-When using the rest operator, remember that you must make the type an array. This really just makes it so that you pass individual string params to teh function instead of an array. For example:
+This could be explicitly written as:
+
+```typescript
+function greet(name: string): string {
+  return `Hello ${name}`;
+}
+
+let myGreet: (name: string) => string = greet; // explicit type
+
+let myGreeting: string = myGreet('Sue'); // explicit type
+```
+
+Note when using the rest operator, remember that you must make the type an array. This really just makes it so that you pass individual string params to teh function instead of an array. For example:
 
 ```typescript
 // You can use the rest operator here:
@@ -243,7 +264,25 @@ function drawPoint(point: Point) {
 }
 ```
 
-Note the use of semi-colons `;` instead of commas `,`. Also:
+Note the use of semi-colons `;` instead of commas `,`. 
+
+Types can include *method signatures* which can be defined using two slightly different syntaxes:
+
+```typescript
+// type alias with a method signature
+type Type1 = {
+  id: number;
+  greet: (name: string) => void;
+};
+
+// type alias with a method signature - shorthand syntax
+type Type2 = {
+  id: number;
+  greet(name: string): void;
+};
+```
+
+Also:
 
 ```typescript
 // Types aliases can be used within other types:
@@ -255,6 +294,8 @@ type User = {
   name: string;
   theme: Theme;
   greeting?: () => void;
+  // Shorthand:
+  // greeting?(): void;
 };
 
 // An object that uses the custom type (without optional function)
@@ -308,7 +349,7 @@ Type interfaces are similar to type aliases, but there are a few differences:
 
 - Syntax: Defined using the `interface` keyword. Also note no assignment `=`.
 - Use Case: Primarily used for defining the shape of objects (not unions or tuples).
-- Extension: Can be extended or implemented by other interfaces or classes (i.e., they are open and can be augmented).
+- Extension: Can be extended or implemented by other interfaces or classes (they are open and can be augmented).
 
 
 ```typescript
@@ -322,9 +363,25 @@ function drawPoint(point: Point) {
 }
 ```
 
+Same as with Type alias, interfaces can include *method signatures* which can be defined using two slightly different syntaxes:
+
+```typescript
+// type interface with a method signature
+interface Example1 {
+  id: number;
+  greet: (name: string) => void;
+}
+
+// type interface with a method signature - shorthand syntax
+interface Example2 {
+  id: number;
+  greet(name: string): void;
+}
+```
+
 Use *type aliases* when you need to describe a type that might not be an object or when you need a union or tuple type. Use *interfaces* when you want to define the shape of objects and need the ability to extend or implement them in other interfaces or classes. 
 
-## Function
+## Function type
 
 The global type `Function` describes properties like bind, call, apply, and others present on all function values in JavaScript. It also has the special property that values of type `Function` can always be called; these calls return `any`:
 
