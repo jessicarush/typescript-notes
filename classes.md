@@ -4,6 +4,15 @@
 
 <!-- toc -->
 
+- [Typing classes](#typing-classes)
+- [Access modifiers `public`, `private` and `protected`](#access-modifiers-public-private-and-protected)
+- [Classes can use interfaces or types](#classes-can-use-interfaces-or-types)
+- [Implements clauses](#implements-clauses)
+- [Extends clauses](#extends-clauses)
+- [Abstract classes](#abstract-classes)
+
+<!-- tocstop -->
+
 ## Typing classes 
 
 ```typescript
@@ -65,7 +74,67 @@ console.log(contact.email); // TypeScript error!
 
 `protected` is the same as `private`, with the exception that subclasses can also access them.
 
+## Classes can use interfaces or types
+
+You can very much define classes that use other interfaces or types:
+
+```typescript
+interface ScrumMaster {
+  name: string;
+  holdScrumMeeting(): void;
+}
+
+interface Manager {
+  name: string;
+  holdScrumMeeting(): void;
+  somethingPrivate(): void;
+}
+
+class Project {
+  name: string;
+  budget: number;
+  scrumMaster: ScrumMaster;
+
+  constructor(name: string, budget: number, scrumMaster: ScrumMaster) {
+    this.name = name;
+    this.budget = budget;
+    this.scrumMaster = scrumMaster;
+  }
+
+  holdProjectMeeting() {
+    this.scrumMaster.holdScrumMeeting();
+  }
+}
+const scrumMaster: ScrumMaster = {
+  name: 'Bob',
+  holdScrumMeeting() {
+    console.log('Playing scrum...');
+  }
+};
+
+const manager: Manager = {
+  name: 'Maeve',
+  holdScrumMeeting() {
+    console.log('Playing scrum...');
+  },
+  somethingPrivate() {
+    console.log('Should not be accessible in project');
+  }
+};
+
+const xProject = new Project('X project', 100, scrumMaster);
+const yProject = new Project('Y project', 500, manager);
+```
+
+They only difference between using an interface vs a type alias, it that the interface can be extended. It also seems to be more common to use interfaces with classes in general.
+
 ## Implements clauses
+
+In TypeScript, the difference between using an interface to define the shape of an object and using implements in a class to enforce that the class conforms to the structure of an interface is a matter of *defining a contract* versus *implementing a contract*.
+
+**Defining a Contract**: When you use an interface, you are defining a contract or a shape that objects can follow. This doesn't create a tangible class or object but rather specifies what properties and methods should be present in objects that adhere to this interface.
+
+**Implementing a Contract**: When a class uses implements with an interface, it's making a commitment to fulfill the contract defined by that interface. The class must provide concrete implementations of all the properties and methods declared in the interface.
 
 You can use an `implements` clause to check that a class satisfies a particular interface:
 
@@ -159,5 +228,5 @@ dog.move(); // Moving along!
 dog.makeSound(); // Woof!
 ```
 
-Note: for some reason TypeScript is fussier when using abstract classes in that I have to put all the return void types in there. You 
+Note: for some reason TypeScript is fussier when using abstract classes in that I have to put all the return void types in there. You
 
