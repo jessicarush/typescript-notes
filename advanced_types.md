@@ -9,9 +9,15 @@
 - [keyof operator](#keyof-operator)
 - [Conditional types](#conditional-types)
 - [Infer](#infer)
-- [Literal types](#literal-types)
+- [String literal types](#string-literal-types)
 - [Mapped types](#mapped-types)
 - [Utility types](#utility-types)
+  * [Required](#required)
+  * [Partial](#partial)
+  * [Readonly](#readonly)
+  * [Pick](#pick)
+  * [Omit](#omit)
+  * [ReturnType](#returntype)
   * [Record](#record)
 
 <!-- tocstop -->
