@@ -15,4 +15,9 @@ Some examples and notes come from the following:
 - [TypeScript Deep Dive](https://basarat.gitbook.io/typescript/) - *Basarat Ali Syed*
 
 
+## resources 
+
+- [TypeScript type challenges](https://github.com/type-challenges/type-challenges)
+
+
 A very special thanks to [aleph2c](https://github.com/aleph2c) for so much support. Check out his epic [python statechart library; Miros](https://aleph2c.github.io/miros/index.html).
