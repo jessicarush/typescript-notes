@@ -289,11 +289,296 @@ type NamesAndCos = GetNamesAndCos<Emails>;
 // type NamesAndCos = ["Bob", "companyA.com"] | ["Sally", "companyB.com"] | ["Frank", "companyC.com"]
 ```
 
-## Literal types 
+## String literal types 
+
+You can use string interpolation to build string types:
+
+```typescript
+type Level = 'Junior' | 'Senior' | 'Expert';
+type Position = 'Programmer' | 'Admin' | 'Manager';
+
+type LeveledPosition = `${Level} ${Position}`;
+
+let test1: LeveledPosition = 'Junior Admin';
+
+type Prefixed<P extends string, T extends string> = `${P} ${T}`;
+
+let test2: Prefixed<'Awesome', Position> = 'Awesome Admin';
+```
+
+There are also a few *intrinsic string manipulation* types (these are also considered [utility types](https://www.typescriptlang.org/docs/handbook/utility-types.html)):
+
+```typescript
+let lowerCasePositions: Lowercase<Position> = 'admin';
+let upperCasePositions: Uppercase<Position> = 'ADMIN';
+let uncapitalizedPositions: Uncapitalize<Position> = 'admin';
+let capitalizedPositions: Capitalize<Position> = 'Admin';
+```
 
 ## Mapped types 
 
+A mapped type is a generic type which uses a union of `PropertyKey`s (frequently created via a `keyof`) to iterate through keys to create a type. You can iterate over a type alias/interface or an object value:
+
+```typescript
+type StarterMapType<T> = {
+  [key in keyof T]: T[key];
+};
+```
+
+The mapped type above simply returns a type that exactly the same as `T`. This shows us the pattern though and is a good starting point for when you wnat to make a new type.
+
+```typescript
+type MyMappedType<T> = {
+  [K in keyof T]: T[K] | null;
+};
+
+const originalObject = {
+  name: "John",
+  age: 30,
+  email: "john@example.com",
+};
+
+type NullableObject = MyMappedType<typeof originalObject>;
+// type NullableObject = {
+//   name: string | null;
+//   age: number | null;
+//   email: string | null;
+// }
+```
+
+In this example, we define a mapped type `MyMappedType` that takes an input type `T` and creates a new type. It iterates over the keys (`name`, `age`, `email`) of the input type `T` using the `keyof` operator and transforms each property's type to include `null`. So, `NullableObject` will have the same keys as `originalObject`, but each property's type will be `T[K] | null`.
+
+When you're mapping over a regular object (an instance of an object), use `typeof` to capture its type.
+
+We can iterate over other types too, for example:
+
+```typescript
+type Role = 'Programmer' | 'Admin' | 'Manager';
+
+// If we hardcode this, we have to remember to update both when new roles are added:
+// type RoleDuties = {
+//   Programmer: string[];
+//   Admin: string[];
+//   Manager: string[];
+// };
+
+type RoleDutiesMap = {
+  [role in Role]: string[];
+};
+// type RoleDutiesMap = {
+//   Programmer: string[];
+//   Admin: string[];
+//   Manager: string[];
+// }
+
+type GenericMap<T extends string> = {
+  [key in T]: string[];
+};
+
+type RoleDuties = GenericMap<Role>;
+// type RoleDuties = {
+//   Programmer: string[];
+//   Admin: string[];
+//   Manager: string[];
+// 
+```
+
+Note we are having to say `<T extends string>` because it restricts the type parameter `T` to only accept string literal types or unions of string literals. 
+
+This type map makes a copy of another object type but with `readonly` properties:
+
+```typescript
+type ReadonlyMapType<T> = {
+  readonly [key in keyof T]: T[key];
+};
+```
+
+You could also remove any existing `readonly` keywords:
+
+```typescript
+type MutableMapType<T> = {
+  -readonly [key in keyof T]: T[key];
+};
+```
+
+You can also do *key remapping* using the `as` keyword:
+
+```typescript
+type User = {
+  name: string;
+  age: number;
+};
+
+type Verbose<T> = {
+  [key in keyof T as `user${Capitalize<string & key>}`]: T[key];
+};
+
+type VerboseUser = Verbose<User>;
+// type VerboseUser = {
+//   userName: string;
+//   userAge: number;
+// }
+```
+
+Note the `<string & key>` in the *intrinsic string manipulation*. With this we ensure that the resulting keys are not just the original keys but are also of type string. This is important because the Capitalize utility type expects a string as input.
+
+Mapped types are useful for scenarios where you want to make certain properties optional, change their types, or perform other transformations while preserving the overall structure of the original type.
+
 ## Utility types
+
+There are many [utility types](https://www.typescriptlang.org/docs/handbook/utility-types.html). These are just a few.
+
+Let's start with a type alias of an object that has some optional properties:
+
+```typescript
+type Employee = {
+  name: string;
+  position: string;
+  salary: {
+    amount: number;
+    currency: string;
+    bonus?: 10 | 20 | 30;
+  };
+  isAdmin: boolean;
+  employedAt: string;
+  team?: string;
+};
+```
+
+### Required<Type>
+
+```typescript
+type RequiredEmployee = Required<Employee>;
+// type RequiredEmployee = {
+//     name: string;
+//     position: string;
+//     salary: {
+//         amount: number;
+//         currency: string;
+//         bonus?: 10 | 20 | 30;
+//     };
+//     isAdmin: boolean;
+//     employedAt: string;
+//     team: string;
+// }
+```
+
+### Partial<Type>
+
+```typescript
+type OptionalEmployee = Partial<Employee>;
+// type OptionalEmployee = {
+//     name?: string | undefined;
+//     position?: string | undefined;
+//     salary?: {
+//         amount: number;
+//         currency: string;
+//         bonus?: 10 | 20 | 30 | undefined;
+//     } | undefined;
+//     isAdmin?: boolean | undefined;
+//     employedAt?: string | undefined;
+//     team?: string | undefined;
+// }
+```
+
+### Readonly<Type>
+
+```typescript
+type ReadonlyEmployee = Readonly<Employee>;
+// type ReadonlyEmployee = {
+//     readonly name: string;
+//     readonly position: string;
+//     readonly salary: {
+//         amount: number;
+//         currency: string;
+//         bonus?: 10 | 20 | 30;
+//     };
+//     readonly isAdmin: boolean;
+//     readonly employedAt: string;
+//     readonly team?: string | undefined;
+// }
+```
+
+### Pick<Type, Keys>
+
+```typescript
+type SalaryPick = Pick<Employee, 'salary'>;
+// type SalaryPick = {
+//   salary: {
+//       amount: number;
+//       currency: string;
+//       bonus?: 10 | 20 | 30;
+//   };
+// }
+
+type Salary = Employee['salary'];
+// type Salary = {
+//   amount: number;
+//   currency: string;
+//   bonus?: 10 | 20 | 30 | undefined;
+// }
+```
+
+### Omit<Type, Keys>
+
+```typescript
+type SanitizedEmployee = Omit<Employee, 'employedAt'>;
+// type SanitizedEmployee = {
+//   salary: {
+//       amount: number;
+//       currency: string;
+//       bonus?: 10 | 20 | 30;
+//   };
+//   name: string;
+//   position: string;
+//   isAdmin: boolean;
+//   team?: string | undefined;
+// }
+```
+
+You can also use Omit to replace a property:
+
+```typescript
+type SanitizedEmployee = Omit<Employee, 'employedAt'> & {
+  employedSince: Date;
+};
+// type SanitizedEmployee = {
+//   salary: {
+//       amount: number;
+//       currency: string;
+//       bonus?: 10 | 20 | 30;
+//   };
+//   name: string;
+//   position: string;
+//   isAdmin: boolean;
+//   employedSince: Date;
+//   team?: string | undefined;
+// }
+```
+
+### ReturnType<Type>
+
+```typescript
+function getData(id: string) {
+  // Fetching data...
+  return {
+    name: 'Bob',
+    position: 'Developer',
+    salary: 150000,
+    teams: ['x', 'y']
+  };
+}
+
+type Person = ReturnType<typeof getData>;
+// type Person = {
+//   name: string;
+//   position: string;
+//   salary: number;
+//   teams: string[];
+// }
+```
+
+Note, as with our first [Mapped type](#mapped-types) example where we're mapping over an object rather than an type object, we have to use the `typeof` keyword to ensure TypeScript gets the types.
 
 ### Record<Keys, Type>
 
