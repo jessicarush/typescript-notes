@@ -135,21 +135,137 @@ function logIdentity<Type extends { length: number }>(arg: Type): Type {
 
 Here, the `Type` generic type parameter is constrained. It ensures that you can only pass objects with a `length` property to the `logIdentity` function.
 
-Here's a harder one that not only uses more than one parameter but also uses they `keyof` keyword instead of a traditional property constraint. The gola is to get a property from an object given its name while ensuring that we’re not accidentally grabbing a property that doesn't exist on the object.
+Here's a harder one that not only uses more than one parameter but also uses they `keyof` keyword instead of a traditional property constraint. The goal is to get a property from an object given its name while ensuring that we’re not accidentally grabbing a property that doesn't exist on the object.
 
 ```typescript
-function getProperty<Type, Key extends keyof Type>(obj: Type, key: Key) {
+function getProperty<Type, Key extends keyof Type>(obj: Type, key: Key): Type[Key] {
   return obj[key];
 }
  
 let x = { a: 1, b: 2, c: 3, d: 4 };
  
-getProperty(x, "a"); // will give us an Error if we don't pass a valid key
+getProperty(x, 'a'); // will give us an Error if we don't pass a valid key
 ```
+
+This leads us to...
 
 ## Multiple types
 
+Consider this:
+
+```typescript
+const roleA = {
+  holdsMeetings: false,
+  teams: ['Team1', 'team2']
+};
+
+const roleB = {
+  holdsMeetings: true,
+  reportsTo: 'person1'
+};
+
+function mergeRoles(role1: object, role2: object): object {
+  return { ...role1, ...role2 };
+}
+
+const roleC = mergeRoles(roleA, roleB);
+console.log(roleC.holdsMeetings); // ❌ Error: property doesn't exist on type 'object'
+```
+
+Instead, add two generic type variables and add constraints that they must be objects. Since were are merging the two objects, we will say that the return value is `T & G`:
+
+```typescript
+const roleA = {
+  holdsMeetings: false,
+  teams: ['Team1', 'team2']
+};
+
+const roleB = {
+  holdsMeetings: true,
+  reportsTo: 'person1'
+};
+
+function mergeRoles<T extends object, G extends object>(role1: T, role2: G): T & G {
+  return {...role1, ...role2};
+}
+
+const roleC = mergeRoles(roleA, roleB);
+console.log(roleC.holdsMeetings); // ✅ Has IntelliSense
+```
+
+Just a reminder when using type intersections `T & G`, if there are duplicate properties, they must be of the same type, otherwise TypeScript will assign a type of `never` to the resulting property.
+
+As an exercise, I tries to find a way to handle this situation elegantly. I worked with ChatGPT for over an hour with no good solutions. In this case the best I could come up with wath using type narrowing:
+
+```typescript
+const roleA = {
+  holdsMeetings: false, // boolean
+  teams: ['Team1', 'team2']
+};
+
+const roleB = {
+  holdsMeetings: 'true', // string
+  reportsTo: 'person1'
+};
+
+// If mergeRoles is typed to return `T & G`, we het the following error:
+// The intersection '{ holdsMeetings: boolean; teams: string[]; } & 
+// { holdsMeetings: string; reportsTo: string; } & Record<"holdsMeetings", unknown>'
+// was reduced to 'never' because property 'holdsMeetings' has conflicting types 
+// in some constituents
+function mergeRoles<T extends object, G extends object>(role1: T, role2: G): object {
+  return {...role1, ...role2};
+}
+
+const roleC = mergeRoles(roleA, roleB);
+
+if ('holdsMeetings' in roleC) {
+  console.log(roleC.holdsMeetings);
+}
+```
+
+In a real-world scenario, you would likely write some function to normalize the objects first I guess.
+
 ## Generic classes
+
+Classes can use generic type variables too.
+
+```typescript
+class MemoryDatabase<T> {
+  protected items = new Array<T>();
+
+  public addItem(item: T) {
+    this.items.push(item);
+  }
+
+  public getItemByIndex(index: number): T | undefined {
+    return this.items[index];
+  }
+
+  public listItems() {
+    this.items.forEach((item) => {
+      console.log(item);
+    });
+  }
+}
+
+const names = new MemoryDatabase<string>();
+names.addItem('John');
+const firstname = names.getItemByIndex(0); // John
+
+
+class MemoryDatabaseWithDelete<T extends { id: string }> extends MemoryDatabase<T> {
+
+  public delete(id: string) {
+    const index = this.items.findIndex((x) => x.id === id);
+    this.items.splice(index, 1);
+  }
+}
+
+const withIds = new MemoryDatabaseWithDelete<{ id: string }>();
+withIds.addItem({ id: '123' });
+const firstId = withIds.getItemByIndex(0); // { id: '123' }
+```
 
 ## Generic types and interfaces
 
@@ -214,5 +330,3 @@ Deciding where to place generic type parameters can change how the generic behav
 When you put a generic type parameter directly on the call signature of a function, the generic aspect is specific to that function. This means each time the function is used, it can be called with a different type.
 
 When you define a new generic type parameter on an interface, the entire interface becomes generic. This means that when you implement or use this interface, you lock in a specific type for all members of the interface, potentially including multiple methods or properties.
-
-

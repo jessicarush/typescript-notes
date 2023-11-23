@@ -512,15 +512,15 @@ Interfaces extending
 
 Type aliases with intersections
 
-- Handling Conflicts: When you create a type alias using intersection types (using the & operator), TypeScript combines the properties of all types. If there are conflicts (the same property in multiple types but with different types), TypeScript will treat the type of that property as the intersection of the types from each type in the intersection. This often results in never type if the intersected types are incompatible, effectively flagging a type error.
+- Handling Conflicts: When you create a type alias using intersection types (using the & operator), TypeScript combines the properties of all types. If there are conflicts (the same property in multiple types but with different types), TypeScript will treat the type of that property as the intersection of the types from each type in the intersection. This often results in `never` type if the intersected types are incompatible, effectively flagging a type error.
 
 ```typescript
 interface A {
-    prop: string;
+  prop: string;
 }
 
 interface B extends A {
-    prop: number; // Error: Type 'number' is not assignable to type 'string'.
+  prop: number; // Error: Type 'number' is not assignable to type 'string'.
 }
 ```
 
@@ -530,7 +530,7 @@ vs
 type A = { prop: string };
 type B = { prop: number };
 
-// Type of 'prop' in C is 'never' because string and number types are incompatible
+// // Error: Type of 'prop' in C is 'never' because string and number types are incompatible.
 type C = A & B; /
 ```
 
