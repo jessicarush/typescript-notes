@@ -14,6 +14,7 @@ TypeScript is a superset of JavaScript that adds *static typing* and other featu
 - [Compile](#compile)
 - [ts-node](#ts-node)
 - [@types/node](#typesnode)
+- [// @ts-commands](#-ts-commands)
 
 <!-- tocstop -->
 
@@ -98,4 +99,19 @@ When using Node.js-specific modules like `crypto` in a TypeScript project, you n
 ```
 npm install @types/node --save-dev
 ```
+
+## // @ts-commands
+
+TypeScript may offer you errors which you disagree with, in those cases you can ignore errors on specific lines by adding `// @ts-ignore` or `// @ts-expect-error` on the preceding line.
+
+```typescript
+type Testing = string;
+// @ts-expect-error
+let testing: Testing = true;
+```
+
+To enable TypeScript to raise errors in JavaScript files you would add: `// @ts-check` to the first line in your .js files.
+
+Conversely, You can skip checking some files by adding a `// @ts-nocheck` comment to the first line of a file.
+
 
