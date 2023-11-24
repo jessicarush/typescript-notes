@@ -18,6 +18,7 @@
   * [Pick](#pick)
   * [Omit](#omit)
   * [ReturnType](#returntype)
+  * [Awaited](#awaited)
   * [Record](#record)
 
 <!-- tocstop -->
@@ -585,6 +586,41 @@ type Person = ReturnType<typeof getData>;
 ```
 
 Note, as with our first [Mapped type](#mapped-types) example where we're mapping over an object rather than an type object, we have to use the `typeof` keyword to ensure TypeScript gets the types.
+
+### Awaited<Type>
+
+This type is meant to model operations like `await` in `async` functions, or the `.then()` method on Promises - specifically, the way that they recursively unwrap Promises.
+
+```typescript
+async function getEmployees() {
+  return Promise.resolve([
+    {
+      name: 'John',
+      position: 'Programmer',
+      salary: 100000
+    }
+  ]);
+}
+
+async function wrapper() {
+  const employees = await getEmployees();
+}
+
+type EmployeeReturnType1 = ReturnType<typeof getEmployees>;
+// 'EmployeeReturnType1' is declared but never used.ts(6196)
+// type EmployeeReturnType = Promise<{
+//     name: string;
+//     position: string;
+//     salary: number;
+// }[]>
+
+type EmployeeReturnType2 = Awaited<ReturnType<typeof getEmployees>>;
+// type EmployeeReturnType2 = {
+//   name: string;
+//   position: string;
+//   salary: number;
+// }[]
+```
 
 ### Record<Keys, Type>
 
