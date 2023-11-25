@@ -9,6 +9,16 @@ If you need a refresher on modules and bundling in JavaScript, see:
 
 <!-- toc -->
 
+- [Introduction](#introduction)
+- [Output ES6 modules](#output-es6-modules)
+- [type keyword in imports](#type-keyword-in-imports)
+- [Bundlers](#bundlers)
+- [Webpack](#webpack)
+- [Esbuild](#esbuild)
+- [Vite](#vite)
+
+<!-- tocstop -->
+
 ## Introduction
 
 The first thing to note regarding modules in TypeScript is that by default TypeScript is configured to compile to *CommonJS* (`module.exports`, `require()`) as opposed to *ES6* (`import`, `export`). 
