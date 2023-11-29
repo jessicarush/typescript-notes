@@ -14,6 +14,7 @@ If you need a refresher on modules and bundling in JavaScript, see:
 - [type keyword in imports](#type-keyword-in-imports)
 - [Bundlers](#bundlers)
 - [Webpack](#webpack)
+  * [Multiple configurations: web and node with external packages](#multiple-configurations-web-and-node-with-external-packages)
 - [Esbuild](#esbuild)
 - [Vite](#vite)
 
@@ -170,7 +171,7 @@ Note you don't need to have configured `src` as your `rootDir` in `tsconfig.json
 
 In the project dir create a `webpack.config.ts` file.
 
-This setup only works with `"module": "commonjs"`
+Note: The following config is for running in `node` and only works with `"module": "commonjs"` (`tsconfig.json`). 
 
 ```typescript
 import { Configuration } from 'webpack';
@@ -209,8 +210,183 @@ export default config;
 
 To build, just run `webpack`. It will create a `bundle.js`.
 
+### Multiple configurations: web and node with external packages
+
+Normally you would be building for the browser or for node, bot both, but just as an exercise, lets see how you could do both.
+
+You will need need a second `tsconfig.json` for the web build. Call the second file `tsconfig.web.json` and have it extend the main `tsconfig.json` file:
+
+```json
+{
+  "extends":"./tsconfig.json",
+  "compilerOptions": {
+    "module": "ES6"
+  }
+}
+```
+
+Then we will need two webpack config files, one for node and one for web.
+
+**webpack.config.node.ts**:
+
+```typescript
+import { Configuration } from 'webpack';
+import { resolve } from 'path';
+
+const config: Configuration = {
+  mode: 'none',
+  entry: {
+    'bundle-node': './src/main.ts'      // creates a bundle-node.js
+  },
+  target: 'node',                       // node!
+  module: {
+    rules: [
+      {
+        exclude: /node_modules/,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true
+          }
+        }
+      }
+    ]
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js']
+  },
+  output: {
+    filename: '[name].js',
+    path: resolve(__dirname, 'dist')
+  }
+};
+
+export default config;
+```
+
+**webpack.config.web.ts**:
+
+```typescript
+import { Configuration } from 'webpack';
+import { resolve } from 'path';
+
+const config: Configuration = {
+  mode: 'none',
+  entry: {
+    'bundle-web': './src/main.ts'          // creates a bundle-web.js
+  },
+  target: 'web',                           // web!
+  module: {
+    rules: [
+      {
+        exclude: /node_modules/,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true,
+            configFile: 'tsconfig.web.json' // ES6 modules config!
+          }
+        }
+      }
+    ]
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js']
+  },
+  output: {
+    filename: '[name].js',
+    path: resolve(__dirname, 'dist')
+  }
+};
+
+export default config;
+```
+
+To build, just run:
+
+```
+webpack --config webpack.config.node.ts
+webpack --config webpack.config.web.ts
+```
+
+It will create a `bundle.js`.
+
+Note: you can set these these build commands up as scripts in your `package.json`:
+
+```json
+{
+  "scripts": {
+    "build-node": "webpack --config webpack.config.node.ts",
+    "build-web": "webpack --config webpack.config.web.ts"
+  }
+}
+```
+
 ## Esbuild
 
+```
+npm install esbuild –save-exact --save-dev
+```
+
+Create a `build.js` file in the project root dir:
+
+```JavaScript
+const { build } = require('esbuild');
+
+async function buildAll(){
+    await build({
+        entryPoints:['./src/main.ts'],
+        bundle: true,
+        platform: 'node',
+        logLevel: 'info',
+        outfile: 'dist/bundle-node.js'
+    });
+    
+    await build({
+        entryPoints:['./src/main.ts'],
+        bundle: true,
+        platform: 'browser',
+        logLevel: 'info',
+        outfile: 'dist/bundle-web.js'
+    })
+}
+
+buildAll();
+```
+
+You can also use the `import` keyword, but then you need to save the file with `.mjs` extension.
+
+> The .mjs file extension is used to explicitly mark a file as an ES Module in Node.js environments. This is particularly relevant in contexts where there's potential ambiguity about the module system being used (CommonJS or ES Modules), such as in a Node.js application.
+
+```JavaScript
+import * as esbuild from 'esbuild';
+
+async function buildAll(){
+    await esbuild.build({
+        entryPoints:['./src/Main.ts'],
+        bundle: true,
+        platform: 'node',
+        logLevel: 'info',
+        outfile: 'dist/bundle-node.js'
+    });
+    
+    await esbuild.build({
+        entryPoints:['./src/Main.ts'],
+        bundle: true,
+        platform: 'browser',
+        logLevel: 'info',
+        outfile: 'dist/bundle-web.js'
+    })
+}
+
+buildAll();
+```
+
+To build, just run the file with node:
+
+```
+node build.mjs
+```
 
 ## Vite 
 

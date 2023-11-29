@@ -13,6 +13,7 @@ TypeScript is a superset of JavaScript that adds *static typing* and other featu
 - [Errors](#errors)
 - [Compile](#compile)
 - [ts-node](#ts-node)
+- [watch](#watch)
 - [@types/node](#typesnode)
 - [// @ts-commands](#-ts-commands)
 
@@ -76,6 +77,16 @@ tsc
 
 This will create a `.js` file using the same name.
 
+You can set this command up as a build script in your `package.json`:
+
+```json
+{
+  "scripts": {
+    "build": "npx tsc"
+  },
+}
+```
+
 ## ts-node 
 
 ```
@@ -86,7 +97,15 @@ This allows you to run TypeScript files directly in node without compiling them 
 
 ```
 ts-node filename.ts
-  ```
+```
+
+## watch
+
+Run `npx tsc --help` to see the CLI options. One of them is `--watch` which will compile as you make changes to any of your source files:
+
+```
+npx tsc --watch
+```
 
 ## @types/node
 
@@ -98,6 +117,12 @@ When using Node.js-specific modules like `crypto` in a TypeScript project, you n
 
 ```
 npm install @types/node --save-dev
+```
+
+It looks like many external libraries will have `@types` package to install, for example:
+
+```
+npm install uuid @types/uuid
 ```
 
 ## // @ts-commands
