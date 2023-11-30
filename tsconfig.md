@@ -18,6 +18,7 @@ For complete reference see:
 - [skipLibCheck](#skiplibcheck)
 - [declaration](#declaration)
 - [sourcemap](#sourcemap)
+- [decorators](#decorators)
 
 <!-- tocstop -->
 
@@ -158,7 +159,6 @@ If you're working on a project where the code is not intended to be consumed as 
 Enables the generation of sourcemap files. These files allow debuggers and other tools to display the original TypeScript source code when actually working with the emitted JavaScript files. Source map files are emitted as `.js.map` (or `.jsx.map`) files next to the corresponding `.js` output file.
 
 ```json
-
 {
   "compilerOptions": {
     /* Emit */
@@ -169,4 +169,15 @@ Enables the generation of sourcemap files. These files allow debuggers and other
 
 This is extremely valuable during debugging because it allows you to see and debug your TypeScript code directly in the browser developer tools or Node.js debuggers, even though the runtime is executing JavaScript.
 
+## decorators
 
+To ensure you are using TypeScript 5 (stage 3) decorators. See [decorators.md](decorators.md). This is the default if not set.
+
+```typescript
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "experimentalDecorators": false
+  }
+}
+```
