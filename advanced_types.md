@@ -77,7 +77,7 @@ let a = [1, 2, 3] as const;
 // a[0] = 4; // error
 ```
 
-See how cont can be used in lieu of assigning a type:
+See how `const` can be used in lieu of assigning a type:
 
 ```typescript
 type Employee = {
@@ -517,13 +517,30 @@ type SalaryPick = Pick<Employee, 'salary'>;
 //       bonus?: 10 | 20 | 30;
 //   };
 // }
-
 type Salary = Employee['salary'];
 // type Salary = {
 //   amount: number;
 //   currency: string;
 //   bonus?: 10 | 20 | 30 | undefined;
 // }
+```
+
+You acn also pick multiple properties:
+
+```typescript
+type NameSalaryPick = Pick<Employee, 'name' | 'salary'>;
+// type SalaryPick = {
+//   name: string;
+//   salary: {
+//       amount: number;
+//       currency: string;
+//       bonus?: 10 | 20 | 30;
+//   };
+// }
+type NameSalary = {
+  name: Employee['name'];
+  salary: Employee['salary'];
+};
 ```
 
 ### Omit<Type, Keys>

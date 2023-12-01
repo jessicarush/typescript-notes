@@ -392,4 +392,12 @@ node build.mjs
 
 [Vite](https://vitejs.dev/guide/#trying-vite-online) has presets for create vanilla TypeScript or React + TypeScript projects using `npm create vite@latest` 
 
-Note SWC..
+```bash
+npm create vite@latest
+# answer questions when prompted 
+# or create from template (same as choosing react + typescript)
+npm create vite@latest my-app -- --template react-ts
+```
+
+Look into SWC options...
+

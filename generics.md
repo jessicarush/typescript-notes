@@ -52,7 +52,7 @@ const myArray3 = toArray('Alex', 1); // Error Argument of type 'number' is not
                                      // assignable to parameter of type 'string'
 ```
 
-In the above function calls we are using *type argument inference*. The compiler looked at the value passed to "toArray", and set `Type` to its type. While type argument inference can be helpful to keep code shorter and more readable, you may need to explicitly pass in the type arguments when the compiler fails to infer the type, as may happen in more complex examples.For example, TypeScript currently does not infer a union type for rest parameters automatically. 
+In the above function calls we are using *type argument inference*. The compiler looked at the value passed to "toArray", and set `Type` to its type. While type argument inference can be helpful to keep code shorter and more readable, **you may need to explicitly pass in the type arguments when the compiler fails to infer the type, as may happen in more complex examples**. For example, TypeScript currently does not infer a union type for rest parameters automatically. 
 
 We can explicitly pass in the type when calling the function like so:
 
@@ -195,7 +195,7 @@ console.log(roleC.holdsMeetings); // ✅ Has IntelliSense
 
 Just a reminder when using type intersections `T & G`, if there are duplicate properties, they must be of the same type, otherwise TypeScript will assign a type of `never` to the resulting property.
 
-As an exercise, I tries to find a way to handle this situation elegantly. I worked with ChatGPT for over an hour with no good solutions. In this case the best I could come up with wath using type narrowing:
+As an exercise, I tried to find a way to handle this situation elegantly. I worked with ChatGPT for over an hour with no good solutions. In this case the best I could come up with was using type narrowing:
 
 ```typescript
 const roleA = {

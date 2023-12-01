@@ -298,6 +298,9 @@ type User = {
   // greeting?(): void;
 };
 
+// A type can be derived from another type (see also Pick utility in advanced_types.md):
+type UserId = User['id'];
+
 // An object that uses the custom type (without optional function)
 const user1: User = {
   id: 1,
