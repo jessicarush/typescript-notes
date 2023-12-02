@@ -16,6 +16,7 @@ TypeScript is a superset of JavaScript that adds *static typing* and other featu
 - [watch](#watch)
 - [@types/node](#typesnode)
 - [// @ts-commands](#-ts-commands)
+- [vscode](#vscode)
 
 <!-- tocstop -->
 
@@ -139,4 +140,48 @@ To enable TypeScript to raise errors in JavaScript files you would add: `// @ts-
 
 Conversely, You can skip checking some files by adding a `// @ts-nocheck` comment to the first line of a file.
 
+```typescript
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+```
+
+## vscode
+
+To debug properly in vscode, you should have just the project root directory open as opposed to a workspace with many directories open in the sidebar.
+
+You should also set `"sourceMap": true` in your `tsconfig.json`.
+
+Open the `Run and Debug` tab in the sidebar.
+
+Add breakpoints by clicking to the left of the line numbers.
+
+Sometimes its bugging and you have to deselect and add breakpoint again.
+
+It will say you should create a `launch.json`:
+
+```json
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug local file",
+          "runtimeArgs": [
+              "-r",
+              "ts-node/register"
+          ],
+          "args": [
+              "${relativeFile}"
+          ],
+          "env": {
+              "request": "test"
+          }
+    }
+  ]
+}
+```
 
