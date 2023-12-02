@@ -20,6 +20,19 @@ Generics are an extra layer of abstraction over regular types. They allow you to
 Generics use a type variable, like `<T>` or `<Type>`, as a placeholder. This allows us to capture the type the user provides (e.g. number), so that we can use that information later. This way, you can write functions, interfaces, or classes that can work with any type, decided at the time of use. We say that this function is generic, as it works over a range of types.
 
 ```typescript
+// Function declaration
+function someFunction<T>(arg: T) {
+  console.log(arg);
+}
+// Arrow function sytanx (function expression)
+const otherFunction = <T>(arg: T) => {
+  console.log(arg);
+};
+```
+
+Another example:
+
+```typescript
 function getArray<Type>(items: Type[]): Type[] {
   return new Array().concat(items);
 }
