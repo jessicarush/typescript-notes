@@ -17,6 +17,9 @@ TypeScript is a superset of JavaScript that adds *static typing* and other featu
 - [@types/node](#typesnode)
 - [// @ts-commands](#-ts-commands)
 - [vscode](#vscode)
+  * [navigation](#navigation)
+  * [debugging](#debugging)
+  * [eslint](#eslint)
 
 <!-- tocstop -->
 
