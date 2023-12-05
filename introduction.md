@@ -147,15 +147,26 @@ Conversely, You can skip checking some files by adding a `// @ts-nocheck` commen
 
 ## vscode
 
+See [TypeScript in Visual Studio Code](https://code.visualstudio.com/docs/languages/typescript).
+
+### navigation 
+
+- control-click function names to go to the definition 
+- right-click on a function to find all references
+- right-click on a function to change all occurrences
+- right-click on a arg and choose `refactor` to do things like `extract to a const`.
+
+Note, sometimes when you rename files, typescript will show an error in your `tsconfig.json`. To fix this, just reload the window. `Command + P`, then type `>reload`, choose `Developer: reload window`.
+
+### debugging
+
 To debug properly in vscode, you should have just the project root directory open as opposed to a workspace with many directories open in the sidebar.
 
 You should also set `"sourceMap": true` in your `tsconfig.json`.
 
 Open the `Run and Debug` tab in the sidebar.
 
-Add breakpoints by clicking to the left of the line numbers.
-
-Sometimes its bugging and you have to deselect and add breakpoint again.
+Add breakpoints by clicking to the left of the line numbers. Sometimes it's buggy and you have to deselect and add breakpoint again.
 
 It will say you should create a `launch.json`:
 
@@ -170,18 +181,61 @@ It will say you should create a `launch.json`:
       "type": "node",
       "request": "launch",
       "name": "Debug local file",
-          "runtimeArgs": [
-              "-r",
-              "ts-node/register"
-          ],
-          "args": [
-              "${relativeFile}"
-          ],
-          "env": {
-              "request": "test"
-          }
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "args": ["${relativeFile}"],
+      "env": {
+        "request": "test"
+      }
     }
   ]
+}
+```
+
+**version: "0.2.0"**  
+This specifies the version of the launch configuration file format. The version "0.2.0" is a standard format used by VSCode.
+
+**configurations:**  
+This is an array of configuration objects. Each object represents a specific debug configuration.
+
+**type: "node"**  
+This tells VSCode that the debug environment is Node.js.
+
+**request: "launch"**  
+This specifies the type of debug session. `"launch"` means VSCode will start the debugging session by launching a new instance of the Node.js application.
+
+**name: "Debug local file"**  
+A human-readable name for this debug configuration, shown in the VSCode launch configuration dropdown.
+
+**runtimeArgs:**  
+These are additional command-line arguments passed to the Node.js runtime. `-r ts-node/register`: This preloads the ts-node/register module, enabling runtime TypeScript support. It's useful when you're debugging TypeScript files directly without compiling them to JavaScript first.
+
+**args:**  
+These are the arguments passed to your program. `${relativeFile}`: This is a variable that refers to the currently active file in VSCode. So, this configuration will debug the currently opened file.
+
+**env:**  
+This allows you to set environment variables for the program.
+
+**"request": "test":**  
+Sets an environment variable named request with the value test. It's not a standard environment variable for Node.js and might be specific to your application's needs.
+
+
+### eslint 
+
+See the [eslint docs](https://eslint.org/docs/latest/use/getting-started).
+
+```
+npm init @eslint/config
+```
+
+You can add rules to your `eslintrc.json`.
+
+You can create a script in your `package.json`:
+
+```json
+{
+  "scripts": {
+    "eslint": "npx eslint ."
+  },
 }
 ```
 
