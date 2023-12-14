@@ -1,4 +1,4 @@
-# Types
+# Types: introduction
 
 ## Table of contents
 

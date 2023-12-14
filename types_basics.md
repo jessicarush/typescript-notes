@@ -1,4 +1,4 @@
-# Types
+# Types: basics
 
 ## Table of contents
 

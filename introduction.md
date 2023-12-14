@@ -1,4 +1,4 @@
-# TypeScript intro notes
+# TypeScript introduction
 
 TypeScript is a superset of JavaScript that adds *static typing* and other features to the language. It is designed to help developers write more robust and maintainable code for large-scale JavaScript applications, and it compiles down to plain JavaScript, which can be run in any environment that supports JavaScript.
 
