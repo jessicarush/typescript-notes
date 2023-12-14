@@ -98,7 +98,7 @@ See [modules_and_bundling.md](modules_and_bundling.md).
 
 ## Include and exclude 
 
-`include` is used to specify an array of filenames or patterns to include in the program. These filenames are resolved relative to the directory containing the `tsconfig.json` file. `incldue` and `exclude` are [tpo level options](https://www.typescriptlang.org/tsconfig) in the `tsconfig.json` file:
+`include` is used to specify an array of filenames or patterns to include in the program. These filenames are resolved relative to the directory containing the `tsconfig.json` file. `incldue` and `exclude` are [top level options](https://www.typescriptlang.org/tsconfig) in the `tsconfig.json` file:
 
 ```json
 {
