@@ -25,9 +25,10 @@ TypeScript is a superset of JavaScript that adds *static typing* and other featu
 
 ## Install
 
-You can install npm per project (`npm init`):
+You can install typescript using npm per project:
 
 ```
+npm init -y
 npm install typescript --save-dev
 npx tsc --version
 ```
@@ -142,6 +143,8 @@ let testing: Testing = true;
 To enable TypeScript to raise errors in JavaScript files you would add: `// @ts-check` to the first line in your .js files.
 
 Conversely, You can skip checking some files by adding a `// @ts-nocheck` comment to the first line of a file.
+
+I've also seen comments disabling eslint and typescript=eslint, but I haven't looked into these yet:
 
 ```typescript
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
