@@ -65,7 +65,7 @@ TypeScript adds its own basic types:
 Arrays can be typed using different syntaxes which are functionally equivalent, for example: 
 
 ```typescript
-// Type is automatically inferred:
+// Type is automatically inferred
 const duties = ['write code'];
 // Using array type literal syntax
 const duties: string[] = ['write code'];
@@ -99,7 +99,7 @@ userCode[0] = 1;
 // However, this will work since tuples compile to Arrays in JavaScript. 
 // But it's expected that developers using TypeScript follow the intended use 
 // of tuples and avoid actions like pushing additional elements:
-userCode.push(12); //
+userCode.push(12);
 ```
 
 While TypeScript tuples offer a way to enforce a certain structure at initialization, they don't completely prevent runtime modifications like push. They are more about providing clearer intent and compile-time checks rather than enforcing strict runtime constraints.
@@ -150,9 +150,9 @@ So, should you let the return value be inferred or explicitly define it?
 
 - **Simple Functions**: For simpler functions where the return type is obvious, the implicit return type (first approach) is often used due to its conciseness.
 - **Complex Functions**: In more complex functions, or in codebases that prioritize explicit type annotations for clarity and maintainability, the explicit return type (second approach) is preferred.
-- **Project or Team Standards**: The choice can also depend on the coding standards of a project or team. Some teams might enforce explicit types for consistency and clarity, while others might opt for the brevity of implicit types where appropriate.
+- **Project or Team Standards**: Some teams might enforce explicit types for consistency and clarity, while others might opt for the brevity of implicit types where appropriate.
 
-Note the type is can also be inferred when the function is called:
+Note the type can also be inferred when the function is called:
 
 ```typescript
 function greet(name: string): string {
@@ -176,7 +176,7 @@ let myGreet: (name: string) => string = greet; // explicit type
 let myGreeting: string = myGreet('Sue'); // explicit type
 ```
 
-Note when using the rest operator, remember that you must make the type an array. This really just makes it so that you pass individual string params to teh function instead of an array. For example:
+Note when using the rest operator, you must make the type an array. This really just makes it so that you pass individual string params to the function instead of an array. For example:
 
 ```typescript
 // You can use the rest operator here:
@@ -186,7 +186,6 @@ function greetMultiple(...names: string[]) {
   });
 }
 // and therefor call with separate string params:
-greetMultiple('John');
 greetMultiple('John', 'Mary');
 
 // Or remove the rest operator:
@@ -196,7 +195,6 @@ function greetMultiple(names: string[]) {
   });
 }
 // and pass an array param:
-greetMultiple(['John']);
 greetMultiple(['John', 'Mary']);
 ```
 
@@ -426,4 +424,4 @@ The `never` type represents values which are never observed. In a return type, t
 
 ## Enums
 
-> Enums are a feature added to JavaScript by TypeScript which allows for describing a value which could be one of a set of possible named constants. Unlike most TypeScript features, this is not a type-level addition to JavaScript but something added to the language and runtime. Because of this, it’s a feature which you should know exists, but maybe hold off on using unless you are sure.
+> Enums are a feature added to JavaScript by TypeScript which allows for describing a value which could be one of a set of possible named constants. Unlike most TypeScript features, this is not a type-level addition to JavaScript but something added to the language and runtime. Because of this, it’s a feature which you should know exists, but maybe hold off on using unless you are sure. See [types_basics.md](types_basics.md).
