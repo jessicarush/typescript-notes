@@ -54,7 +54,7 @@ class Contact {
 }
 ```
 
-`private` properties are only accessible from within the class. They are also not accessible to subclasses (extends).This keyword can also be added to methods.
+`private` properties are only accessible from within the class. They are also not accessible to subclasses (extends). This keyword can also be added to methods.
 
 ```typescript
 class Contact {
@@ -130,7 +130,7 @@ They only difference between using an interface vs a type alias, it that the int
 
 ## Implements clauses
 
-In TypeScript, the difference between using an interface to define the shape of an object and using implements in a class to enforce that the class conforms to the structure of an interface is a matter of *defining a contract* versus *implementing a contract*.
+In TypeScript, the difference between using an interface to define the shape of an object and using `implements` in a class to enforce that the class conforms to the structure of an interface is a matter of *defining a contract* versus *implementing a contract*.
 
 **Defining a Contract**: When you use an interface, you are defining a contract or a shape that objects can follow. This doesn't create a tangible class or object but rather specifies what properties and methods should be present in objects that adhere to this interface.
 
@@ -167,7 +167,8 @@ class C implements A {
   x = 0;
 }
 const c = new C();
-c.y = 10; // Property 'y' does not exist on type 'C'.
+c.x = 10; // ✅ no problem
+c.y = 10; // ❌ Property 'y' does not exist on type 'C'.
 ```
 
 ## Extends clauses
@@ -228,5 +229,5 @@ dog.move(); // Moving along!
 dog.makeSound(); // Woof!
 ```
 
-Note: for some reason TypeScript is fussier when using abstract classes in that I have to put all the return void types in there. You
+Note: for some reason TypeScript is fussier when using abstract classes in that I have to put all the return void types in there.
 
