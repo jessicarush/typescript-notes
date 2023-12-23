@@ -118,7 +118,7 @@ function logIdentity<Type>(arg: Type): Type {
 }
 ```
 
-Instead of working with any and all types, we’d like to *constrain* this function to work with any and all types that also have the `.length` property. As long as the type has this member, we’ll allow it. To do so, we must list our requirement as a constraint on what Type can be.
+Instead of working with any and all types, we’d like to *constrain* this function to work with any and all types that also have the `.length` property. As long as the type has this member, we’ll allow it. To do so, we must list our requirement as a constraint on what `Type` can be.
 
 First, create an interface that describes our constraint. Then, use this interface and the `extends` keyword to denote our constraint:
 
@@ -182,10 +182,10 @@ function mergeRoles(role1: object, role2: object): object {
 }
 
 const roleC = mergeRoles(roleA, roleB);
-console.log(roleC.holdsMeetings); // ❌ Error: property doesn't exist on type 'object'
+console.log(roleC.holdsMeetings); // ❌ TypeScript Error: property doesn't exist on type 'object'
 ```
 
-Instead, add two generic type variables and add constraints that they must be objects. Since were are merging the two objects, we will say that the return value is `T & G`:
+Instead, add two generic type variables and add constraints that they must be objects. Since we are merging the two objects, we will say that the return value is `T & G`:
 
 ```typescript
 const roleA = {
@@ -221,7 +221,7 @@ const roleB = {
   reportsTo: 'person1'
 };
 
-// If mergeRoles is typed to return `T & G`, we het the following error:
+// If mergeRoles is typed to return `T & G`, we get the following error:
 // The intersection '{ holdsMeetings: boolean; teams: string[]; } & 
 // { holdsMeetings: string; reportsTo: string; } & Record<"holdsMeetings", unknown>'
 // was reduced to 'never' because property 'holdsMeetings' has conflicting types 
@@ -282,7 +282,7 @@ const firstId = withIds.getItemByIndex(0); // { id: '123' }
 
 ## Generic types and interfaces
 
-So how to we identify the type of a generic function? For example:
+So how do we identify the type of a generic function? For example:
 
 ```typescript
 function identity<Type>(arg: Type): Type {

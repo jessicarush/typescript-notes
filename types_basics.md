@@ -67,7 +67,7 @@ const getTheme: ThemeFunction = (theme = 'dark') => {
 }
 ```
 
-That syntax seen in the Type alias and interface above is specifically a function call signature, not to be confused with a *method signature*:
+That syntax seen in the Type alias and interface above is specifically a *function call signature*, not to be confused with a *method signature*:
 
 ```typescript
 interface Example1 {
@@ -279,7 +279,7 @@ let complicatedJob: ComplicatedJob = {
   reports: ['daily', 'weekly']
 };
 
-// We can safely assign complicatedJob to simpleJob because it had all the 
+// We can safely assign complicatedJob to simpleJob because it has all the 
 // required properties
 simpleJob = complicatedJob;
 // This will result in a TypeScript error because simpleJob is missing properties
@@ -366,7 +366,7 @@ class Engineer {
 }
 ```
 
-Also should remind about optional chaining, even though that is a native JS feature (as of ES202).
+Also should remind about optional chaining, even though that is a native JS feature (as of ES2020).
 
 ```typescript
 type Manager = {
@@ -502,17 +502,17 @@ let complicatedJob: ComplicatedJob = {
 
 ## Type interface extension vs type alias intersection
 
-> We just looked at two ways to combine types which are similar, but are actually subtly different. With interfaces, we could use an `extends` clause to extend from other types, and we were able to do something similar with intersections and name the result with a *type alias*. The principal difference between the two is how conflicts are handled, and that difference is typically one of the main reasons why you’d pick one over the other between an interface and a type alias of an intersection type.
+> We just looked at two ways to combine types which are similar, but are actually subtly different. With interfaces, we could use an `extends` clause to extend from other types, and we were able to do something similar with intersections and name the result with a *type alias*. The principal difference between the two is how conflicts are handled, and that difference is typically one of the main reasons why you’d pick one over the other.
 
 Specifically they mean how these constructs behave when there are discrepancies or overlapping properties in the types being combined.
 
-Interfaces extending
+Interface extending
 
 - Conflict Resolution: When extending interfaces, if there are conflicting properties, TypeScript enforces that the properties must be of the same type. If the same property exists in multiple interfaces with different types, TypeScript will treat this as an error.
 
 Type aliases with intersections
 
-- Handling Conflicts: When you create a type alias using intersection types (using the & operator), TypeScript combines the properties of all types. If there are conflicts (the same property in multiple types but with different types), TypeScript will treat the type of that property as the intersection of the types from each type in the intersection. This often results in `never` type if the intersected types are incompatible, effectively flagging a type error.
+- Handling Conflicts: When you create a type alias using intersection types (using the `&` operator), TypeScript combines the properties of all types. If there are conflicts (the same property in multiple types but with different types), TypeScript will treat the type of that property as the intersection of the types from each type in the intersection. This often results in `never` type if the intersected types are incompatible, effectively flagging a type error.
 
 ```typescript
 interface A {
@@ -533,6 +533,17 @@ type B = { prop: number };
 // // Error: Type of 'prop' in C is 'never' because string and number types are incompatible.
 type C = A & B; /
 ```
+
+Technically you could have different types be compatible:
+
+```typescript
+type A = { prop: string | number };
+type B = { prop: number };
+
+type C = A & B; // 'prop' in C is 'number' because 'number' is a subset of 'string | number'.
+```
+
+If types are generic and their type parameters are compatible, then the types themselves can be compatible.
 
 ## Enums
 
