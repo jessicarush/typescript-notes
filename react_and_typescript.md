@@ -2,6 +2,7 @@
 
 - [React TypeScript Cheatsheets](https://react-typescript-cheatsheet.netlify.app/)
 - [HTMLElement interface](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement)
+- [HTML Living Standard](https://html.spec.whatwg.org/multipage/indices.html)
 
 ## Table of contents
 
@@ -144,13 +145,14 @@ const otherFunction = <T extends unknown>(arg: T) => {
 ## Forms and events 
 
 ```tsx
+// SyntheticEvent is the base event for all other (more specific) events
 const handleSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
     // ...
   };
 ```
 
-If you need to access `e.target.value` you will need to add a generic type of element using elements from the standard HTMLElement interface. For example:
+If you need to access `e.target.value` you will need to add a generic type of element using elements from the standard [HTMLElement interface](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement). For example:
 
 ```tsx
 React.ChangeEvent<HTMLInputElement>
@@ -213,73 +215,80 @@ UIEvent | Base Event for Mouse, Touch and Pointer events.
 WheelEvent | Scrolling on a mouse wheel or similar input device. (Note: wheel event should not be confused with the scroll event).
 SyntheticEvent | The base event for all above events. Should be used when unsure about event type.
 
-## HTML elements
+## HTML element interfaces
+
+See the [HTML Living Standard](https://html.spec.whatwg.org/multipage/indices.html) for a tidy list. 
+
+I couldn't really find a list like this on MDN. MDN has a complete [elements list](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) but it doesn't show the interfaces. The closest thing to an interface list is if you go to the [HTMLElement interface](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement), then look at the **Related pages for HTML DOM** section in the sidebar.
 
 Element | Description
-:------ | :---------- | 
-HTMLAnchorElement | 
-HTMLAreaElement | 
-HTMLAudioElement | 
-HTMLBRElement | 
-HTMLBaseElement | 
-HTMLBodyElement | 
-HTMLButtonElement | 
-HTMLCanvasElement | 
-HTMLDListElement | 
-HTMLDataElement | 
-HTMLDataListElement | 
-HTMLDialogElement | 
-HTMLDivElement | 
-HTMLDocument | 
-HTMLEmbedElement | 
-HTMLFieldSetElement | 
-HTMLFormControlsCollection | 
-HTMLFormElement | 
-HTMLFrameSetElement | 
-HTMLHRElement | 
-HTMLHeadElement | 
-HTMLHeadingElement | 
-HTMLHtmlElement | 
-HTMLIFrameElement | 
-HTMLImageElement | 
-HTMLInputElement | 
-HTMLLIElement | 
-HTMLLabelElement | 
-HTMLLegendElement | 
-HTMLLinkElement | 
-HTMLMapElement | 
-HTMLMediaElement | 
-HTMLMetaElement | 
-HTMLMeterElement | 
-HTMLModElement | 
-HTMLOListElement | 
-HTMLObjectElement | 
-HTMLOptGroupElement | 
-HTMLOptionElement | 
-HTMLOptionsCollection | 
-HTMLOutputElement | 
-HTMLParagraphElement | 
-HTMLPictureElement | 
-HTMLPreElement | 
-HTMLProgressElement | 
-HTMLQuoteElement | 
-HTMLScriptElement | 
-HTMLSelectElement | 
-HTMLSourceElement | 
-HTMLSpanElement | 
-HTMLStyleElement | 
-HTMLTableCaptionElement | 
-HTMLTableCellElement | 
-HTMLTableColElement | 
-HTMLTableElement | 
-HTMLTableRowElement | 
-HTMLTableSectionElement | 
-HTMLTemplateElement | 
-HTMLTextAreaElement | 
-HTMLTimeElement | 
-HTMLTitleElement | 
-HTMLTrackElement | 
-HTMLUListElement | 
-HTMLUnknownElement | 
-HTMLVideoElement | 
- |
+:------ | :----------
+HTMLElement | `<abbr>`, 
+HTMLAnchorElement | `<a>`
+HTMLAreaElement | `<area>`
+HTMLAudioElement | `<audio>`
+HTMLBRElement | `<br>`
+HTMLBaseElement | `<base>`
+HTMLBodyElement | `<body>`
+HTMLButtonElement | `<button>`
+HTMLCanvasElement | `<canvas>`
+HTMLDListElement | `<dl>`
+HTMLDataElement | `<data>`
+HTMLDataListElement | `<datalist>`
+HTMLDialogElement | `<dialog>`
+HTMLDivElement | `<div>`
+HTMLEmbedElement | `<embed>`
+HTMLFieldSetElement | `<fieldset>`
+HTMLFormControlsCollection | The HTMLFormControlsCollection interface is used for collections of listed elements in form elements.
+HTMLFormElement | `<form>`
+HTMLFrameSetElement | The frameset element acts as the body element in documents that use frames.
+HTMLHRElement | `<hr>`
+HTMLHeadElement | `<head>`
+HTMLHeadingElement | `<h1>`, `<h2>`, `<h3>`, `<h4>`, `<h5>`, `<h6>`
+HTMLHtmlElement | `<html>`
+HTMLIFrameElement | `<iframe>`
+HTMLImageElement | `<img>`
+HTMLInputElement | `<input>`
+HTMLLIElement | `<li>`
+HTMLLabelElement | `<label>`
+HTMLLegendElement | `<legend>`
+HTMLLinkElement | `<link>`
+HTMLMapElement | `<map>`
+HTMLMediaElement | `<audio>`, `<video>`
+HTMLMetaElement | `<meta>`
+HTMLMeterElement | `<meter>`
+HTMLModElement | `<del>`, `<ins>`
+HTMLOListElement | `<ol>`
+HTMLObjectElement | `<object>`
+HTMLOptGroupElement | `<optgroup>`
+HTMLOptionElement | `<option>`
+HTMLOptionsCollection | represents a collection of `<option>` elements. This object is returned only by the options property of `select`.
+HTMLOutputElement | `<output>`
+HTMLParagraphElement | `<p>`
+HTMLPictureElement | `<picture>`
+HTMLPreElement | `<pre>`
+HTMLProgressElement | `<progress>`
+HTMLQuoteElement | `<q>`
+HTMLScriptElement | `<script>`
+HTMLSelectElement | `<select>`
+HTMLSourceElement | `<source>`
+HTMLSpanElement | `<span>`
+HTMLStyleElement | `<style>`
+HTMLTableCaptionElement | `<caption>`
+HTMLTableCellElement | `<td>`, `<th>`
+HTMLTableColElement | The HTMLTableColElement interface provides properties for manipulating single or grouped table column elements.
+HTMLTableElement | `<table>`
+HTMLTableRowElement | `<tr>`
+HTMLTableSectionElement | `<thead>`
+HTMLTemplateElement | `<template>`
+HTMLTextAreaElement | `<textarea>`
+HTMLTimeElement | `<time>`
+HTMLTitleElement | `<title>`
+HTMLTrackElement | `<track>`
+HTMLUListElement | `<ul>`
+HTMLUnknownElement | The HTMLUnknownElement interface represents an invalid HTML element and derives from the HTMLElement interface, but without implementing any additional properties or methods.
+HTMLVideoElement | `<video>`
+
+All other elements use the base `HTMLElement` interface.
+
+---
