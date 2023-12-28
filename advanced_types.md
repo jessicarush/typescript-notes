@@ -313,7 +313,7 @@ type Prefixed<P extends string, T extends string> = `${P} ${T}`;
 let test2: Prefixed<'Awesome', Position> = 'Awesome Admin';
 ```
 
-There are also a few *intrinsic string manipulation* types (these are also considered [utility types](https://www.typescriptlang.org/docs/handbook/utility-types.html)):
+There are also a few *intrinsic string manipulation* types (these are also considered [utility types](#utility-types)):
 
 ```typescript
 let lowerCasePositions: Lowercase<Position> = 'admin';
@@ -332,7 +332,7 @@ type StarterMapType<T> = {
 };
 ```
 
-The mapped type above simply returns a type that exactly the same as `T`. This shows us the pattern though and is a good starting point for when you wnat to make a new type.
+The mapped type above simply returns a type that exactly the same as `T`. This shows us the pattern though and is a good starting point for when you want to make a new type.
 
 ```typescript
 type MyMappedType<T> = {
@@ -624,7 +624,6 @@ async function wrapper() {
 }
 
 type EmployeeReturnType1 = ReturnType<typeof getEmployees>;
-// 'EmployeeReturnType1' is declared but never used.ts(6196)
 // type EmployeeReturnType = Promise<{
 //     name: string;
 //     position: string;

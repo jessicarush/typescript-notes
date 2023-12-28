@@ -14,7 +14,7 @@
 - [Arrow function syntax with generics](#arrow-function-syntax-with-generics)
 - [Forms and events](#forms-and-events)
   * [Events](#events)
-- [HTML elements](#html-elements)
+- [HTML element interfaces](#html-element-interfaces)
 
 <!-- tocstop -->
 

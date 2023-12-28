@@ -82,7 +82,7 @@ Then your html might look like:
 </body>
 ```
 
-One last thing, ensure all your own module imports include the `.js` file extension. For some season TypeScript leaves it off when compiling and then the browser can find the file. Not sure way and too busy to investigate at this point.
+One last thing, ensure all your own module imports include the `.js` file extension. For some season TypeScript leaves it off when compiling and then the browser can find the file.
 
 ```typescript
 import { items } from "./utils.js";
@@ -159,7 +159,7 @@ The [State of JavaScript](https://stateofjs.com/en-US) surveys have a section on
 - WMR
 - Turbopack
 
-Vite and esbuild seem to be teh post popular these days. Technically Vite isn't an actual bundler though. It uses esbuild and Rollup under the hood.
+Vite and esbuild seem to be the most popular these days. Technically Vite isn't an actual bundler though. It uses esbuild and Rollup under the hood.
 
 ## Webpack 
 
@@ -212,7 +212,7 @@ To build, just run `webpack`. It will create a `bundle.js`.
 
 ### Multiple configurations: web and node with external packages
 
-Normally you would be building for the browser or for node, bot both, but just as an exercise, lets see how you could do both.
+Normally you would be building for the browser or for node, not both, but just as an exercise, lets see how you could do both.
 
 You will need need a second `tsconfig.json` for the web build. Call the second file `tsconfig.web.json` and have it extend the main `tsconfig.json` file:
 

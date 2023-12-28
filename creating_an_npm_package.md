@@ -5,7 +5,7 @@
 <!-- toc -->
 
 - [Setup](#setup)
-- [Build and set main, types](#build-and-set-main-types)
+- [Build and set main, types in package.json](#build-and-set-main-types-in-packagejson)
 - [.npmignore](#npmignore)
 - [Pack](#pack)
 - [Installing a local package](#installing-a-local-package)
@@ -44,9 +44,9 @@ In addition set `"declaration": true`.
 
 > Tip: If you are using an external package, consider setting all references to that package in one file, then export/import the function that uses that package as needed.
 
-## Build and set main, types 
+## Build and set main, types in package.json
 
-Once your package is ready to be shared in another project, build it, then set the output index.js as your main file. In addition, add the typescript types file (generated from the `"declaration": true` option).
+Once your package is ready to be shared in another project, build it, then set the output `index.js` as your main file. In addition, add the typescript types file (generated from the `"declaration": true` option) in your `packahe.json`.
 
 ```json
 {
