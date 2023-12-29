@@ -20,8 +20,20 @@
 
 ## Introduction
 
-- use the `.tsx` extension
+Out of the box, TypeScript supports JSX and you can get full React Web support by adding `@types/react` and `@types/react-dom` to your project. These will get added automatically if you use `npm create vite@latest`.
 
+```json
+{
+  // ...
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    // ...
+  }
+}
+```
+
+Every file containing JSX must use the `.tsx` file extension. This is a TypeScript-specific extension that tells TypeScript that this file contains JSX.
 
 ## Props 
 
@@ -82,7 +94,7 @@ type ExampleProps = {
 }
 
 function Example({ message, color }: ExampleProps) {
-  // state - implicit type string
+  // state - implicit (inferred) type string
   const [name, setName] = useState('');
   // state - explicit type string
   // const [name, setName] = useState<string>('');
@@ -105,6 +117,202 @@ function Example({ message, color }: ExampleProps) {
 
 export default Example;
 ```
+
+In the example above, the inferred type is fine, but a common case where you may want to provide a type is when you have a union. For example, `status` here can be one of a few different strings:
+
+```tsx
+type Status = "idle" | "loading" | "success" | "error";
+
+const [status, setStatus] = useState<Status>("idle");
+```
+
+Or, as recommended in [Principles for structuring state](https://react.dev/learn/choosing-the-state-structure#principles-for-structuring-state), you can group related state as an object:
+
+```tsx
+type RequestState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success', data: any }
+  | { status: 'error', error: Error };
+
+const [requestState, setRequestState] = useState<RequestState>({ status: 'idle' });
+```
+
+## useReducer 
+
+The types for the reducer function are inferred from the initial state. You can optionally provide a type argument to the useReducer call to provide a type for the state, but it is often better to set the type on the initial state instead.
+
+First, my React version:
+
+```jsx
+import { useReducer } from 'react';
+
+const initialState = { count: 0 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'reset': {
+      return initialState;
+    }
+    case 'increment': {
+      return { count: state.count + 1 };
+    }
+    case 'decrement': {
+      return { count: state.count - 1 };
+    }
+    default: {
+      throw new Error(`Unhandled action type: ${action.type}`);
+    }
+  }
+}
+
+export default function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <>
+      Count: {state.count}
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+      <button onClick={() => dispatch({ type: 'reset' })}>reset</button>
+    </>
+  );
+}
+```
+
+Now in TypeScript:
+
+```tsx
+import { useReducer } from 'react';
+
+// Create a type for the state
+type State = {
+  count: number;
+};
+
+// Create a type for the action
+type CounterAction =
+  | { type: 'reset' }
+  | { type: 'increment' }
+  | { type: 'decrement' };
+
+const initialState: State = { count: 0 };  // Set the type on the initial state
+
+function reducer(state: State, action: CounterAction) {
+  switch (action.type) {
+    case 'reset': {
+      return initialState;
+    }
+    case 'increment': {
+      return { count: state.count + 1 };
+    }
+    case 'decrement': {
+      return { count: state.count - 1 };
+    }
+    default: {
+      throw new Error('Unknown action'); // We can't assume there is a type property
+    }
+  }
+}
+
+export default function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <>
+      Count: {state.count}
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+      <button onClick={() => dispatch({ type: 'reset' })}>reset</button>
+    </>
+  );
+}
+```
+
+If I had additional properties in my dispatch action object:
+
+```jsx
+const initialState = { count: 0 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'reset': {
+      return initialState;
+    }
+    case 'increment': {
+      return { count: state.count + action.amount };
+    }
+    case 'decrement': {
+      return { count: state.count - action.amount};
+    }
+    default: {
+      throw new Error(`Unhandled action type: ${action.type}`);
+    }
+  }
+}
+
+export default function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <>
+      Count: {state.count}
+      <button onClick={() => dispatch({type: 'decrement', amount: 1})}>-</button>
+      <button onClick={() => dispatch({type: 'increment', amount: 1})}>+</button>
+      <button onClick={() => dispatch({ type: 'reset' })}>reset</button>
+    </>
+  );
+}
+```
+
+...then those would need to also be included in the type for the action:
+
+```tsx
+type State = {
+  count: number;
+};
+
+type CounterAction =
+  | { type: 'reset' }
+  | { type: 'increment', amount: number }
+  | { type: 'decrement', amount: number };
+
+const initialState: State = { count: 0 };
+
+function reducer(state: State, action: CounterAction) {
+  switch (action.type) {
+    case 'reset': {
+      return initialState;
+    }
+    case 'increment': {
+      return { count: state.count + action.amount };
+    }
+    case 'decrement': {
+      return { count: state.count - action.amount };
+    }
+    default: {
+      throw new Error('Unknown action');
+    }
+  }
+}
+
+export default function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <>
+      Count: {state.count}
+      <button onClick={() => dispatch({ type: 'decrement', amount: 1 })}>-</button>
+      <button onClick={() => dispatch({ type: 'increment', amount: 1 })}>+</button>
+      <button onClick={() => dispatch({ type: 'reset' })}>reset</button>
+    </>
+  );
+}
+```
+
+An explicit alternative to setting the type on the `initialState` is to provide a type argument to `useReducer`:
+
+```tsx
+  // ...
+  const [state, dispatch] = useReducer<State>(reducer, initialState);
+```
+
 
 ## Arrow function syntax with generics 
 
