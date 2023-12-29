@@ -399,5 +399,10 @@ npm create vite@latest
 npm create vite@latest my-app -- --template react-ts
 ```
 
-Look into SWC options...
+Note you will have the option to choose `TypeScript + SWC`. 
 
+[SWC (Speedy Web Compiler)](https://swc.rs/) refers to a toolchain that acts primarily as a compiler. It is written in Rust, which makes it significantly faster than traditional JavaScript-based compilers like Babel.
+
+However, since it's newer, there may be some issues so it's important to test your code thoroughly.
+
+The most significant advantage is the speed of compilation, which improves the developer experience. The second bonus is simplified configuration: compared to Babel, SWC often requires less configuration, making it simpler to set up and maintain.
