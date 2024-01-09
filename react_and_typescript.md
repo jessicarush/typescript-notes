@@ -10,7 +10,10 @@
 
 - [Introduction](#introduction)
 - [Props](#props)
+- [Children](#children)
 - [State](#state)
+- [useReducer](#usereducer)
+- [useContext](#usecontext)
 - [Arrow function syntax with generics](#arrow-function-syntax-with-generics)
 - [Forms and events](#forms-and-events)
   * [Events](#events)
@@ -59,7 +62,7 @@ function Example(props: ExampleProps) {
 export default Example;
 ```
 
-or 
+or:
 
 ```tsx
 import React, { useState, useEffect } from 'react';
@@ -81,6 +84,19 @@ function Example({ message, color }: ExampleProps) {
 
 export default Example;
 ```
+
+## Children
+
+There are two common paths to describing the children of a component. The first is to use the `React.ReactNode` type, which is a union of all the possible types that can be passed as children in JSX. The second is to use the `React.ReactElement` type, which is only JSX elements and not JavaScript primitives like strings or numbers:
+
+```tsx
+interface ModalProps {
+  title: string;
+  children: React.ReactElement;
+}
+```
+
+Note, that you cannot use TypeScript to describe that the children are a certain type of JSX elements, e.g. a component which only accepts `<li>` children.
 
 ## State 
 
@@ -142,7 +158,7 @@ const [requestState, setRequestState] = useState<RequestState>({ status: 'idle' 
 
 The types for the reducer function are inferred from the initial state. You can optionally provide a type argument to the useReducer call to provide a type for the state, but it is often better to set the type on the initial state instead.
 
-First, my React version:
+First, my non-TypeScript version:
 
 ```jsx
 import { useReducer } from 'react';
@@ -313,6 +329,188 @@ An explicit alternative to setting the type on the `initialState` is to provide 
   const [state, dispatch] = useReducer<State>(reducer, initialState);
 ```
 
+## useContext 
+
+Let's start with non-TypeScript:
+
+```jsx
+// _contexts/ThemeContext.jsx
+
+import { useState, createContext } from "react";
+
+const ThemeContext = createContext();
+
+function ThemeProvider(props) {
+  const [theme, setTheme] = useState('light');
+
+  return (
+    <ThemeContext.Provider value={{theme, setTheme}}>
+      {props.children}
+    </ThemeContext.Provider>
+  );
+}
+
+export {ThemeContext, ThemeProvider};
+```
+
+Then in my App.jsx:
+
+```jsx
+import { ThemeProvider } from './_contexts/ThemeContext';
+import Example from './_components/Example';
+
+function App() {
+  return (
+    <div className="App">
+      <ThemeProvider>
+        <Example />
+      </ThemeProvider>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Then in my components:
+
+```jsx
+import { useContext } from 'react';
+import { ThemeContext } from '../_contexts/ThemeContext';
+
+function Example() {
+  const { theme, setTheme } = useContext(ThemeContext);
+
+  return (
+    <div className='Example'>
+      <p>Theme is: {theme}</p>
+    </div>
+  );
+}
+
+export default Example;
+```
+
+Now in TypeScript. Let's first start with an example where we only want to use the `theme` context, not `setTheme`.
+
+```tsx
+import React, { useState, createContext } from "react";
+
+type Theme = 'light' | 'dark' | 'system';            // create the type for the context value
+const ThemeContext = createContext<Theme>('system'); // provide the type and a default value
+
+type ThemeProps = {                                  // create type for props.children
+  children: React.ReactElement;
+};
+
+function ThemeProvider(props: ThemeProps) {           // provide type for props
+  const [theme, setTheme] = useState<Theme>('light'); // provide type, otherwise it's interred <string>
+
+  return (
+    <ThemeContext.Provider value={theme}>
+      {props.children}
+    </ThemeContext.Provider>
+  );
+}
+
+export {ThemeContext, ThemeProvider};
+```
+
+My App.tsx remains the same:
+
+```tsx
+import { ThemeProvider } from './_contexts/ThemeContext';
+import Example from './_components/Example';
+
+function App() {
+  return (
+    <div className="App">
+      <ThemeProvider>
+        <Example />
+      </ThemeProvider>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Then in my components:
+
+```tsx
+import { useContext } from 'react';
+import { ThemeContext } from '../_contexts/ThemeContext';
+
+function Example() {
+  // const { theme, setTheme } = useContext(ThemeContext);
+  const theme = useContext(ThemeContext);
+
+  return (
+    <div className='Example'>
+      <p>Theme is: {theme}</p>
+    </div>
+  );
+}
+
+export default Example;
+```
+
+**Important:** The type of the value provided by the context is inferred from the value passed to the `createContext` call: `const ThemeContext = createContext<Theme>('system');`.
+
+> `createContext(defaultValue)` defaultValue: The value that you want the context to have when there is no matching context provider in the tree above the component that reads context. If you don’t have any meaningful default value, specify null. The default value is meant as a “last resort” fallback. It is static and never changes over time. [Source](https://react.dev/reference/react/createContext).
+
+Now let's add the `setTheme` function to the provider:
+
+```tsx
+import React, { useState, createContext } from "react";
+
+type Theme = 'light' | 'dark' | 'system';
+// Create a type that includes the setTheme function
+type ThemeContextType = {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+};
+
+type ThemeProps = {
+  children: React.ReactElement;
+};
+
+// update type and defaultValue:
+const ThemeContext = createContext<ThemeContextType>({theme: 'system', setTheme: () => {}}); 
+
+function ThemeProvider(props: ThemeProps) { 
+  const [theme, setTheme] = useState<Theme>('light');
+
+  return (
+    <ThemeContext.Provider value={{theme, setTheme}}>
+      {props.children}
+    </ThemeContext.Provider>
+  );
+}
+
+export {ThemeContext, ThemeProvider};
+```
+
+The App.tsx remains the same and the components that consume the context can now go back to how they were in the original example:
+
+```tsx
+import { useContext } from 'react';
+import { ThemeContext } from '../_contexts/ThemeContext';
+
+function Example() {
+  const { theme, setTheme } = useContext(ThemeContext);
+
+  return (
+    <div className='Example'>
+      <p>Theme is: {theme}</p>
+    </div>
+  );
+}
+
+export default Example;
+```
+
+This technique works when you have a default value - but there are occasionally cases when you do not, and in those cases `null` can feel reasonable as a default value. See the [react docs](https://react.dev/learn/typescript#typing-usecontext) for an example of this.
 
 ## Arrow function syntax with generics 
 
