@@ -20,6 +20,7 @@ TypeScript is a superset of JavaScript that adds *static typing* and other featu
   * [navigation](#navigation)
   * [debugging](#debugging)
   * [eslint](#eslint)
+- [Resources](#resources)
 
 <!-- tocstop -->
 
@@ -244,4 +245,10 @@ You can create a script in your `package.json`:
   },
 }
 ```
+
+## Resources
+
+- [TypeScript Docs (handbook)](https://www.typescriptlang.org/docs/handbook/intro.html) 
+- [TypeScript Release Notes](https://devblogs.microsoft.com/typescript/)
+- [React TypeScript cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup)
 
