@@ -10,10 +10,13 @@
 
 - [Introduction](#introduction)
 - [Props](#props)
+- [Style Properties](#style-properties)
 - [Children](#children)
 - [State](#state)
 - [useReducer](#usereducer)
 - [useContext](#usecontext)
+- [useMemo](#usememo)
+- [use Callback](#use-callback)
 - [Arrow function syntax with generics](#arrow-function-syntax-with-generics)
 - [Forms and events](#forms-and-events)
   * [Events](#events)
@@ -40,9 +43,9 @@ Every file containing JSX must use the `.tsx` file extension. This is a TypeScri
 
 ## Props 
 
-```tsx
-import React, { useState, useEffect } from 'react';
+There are many syntactical ways to handle this. The first is to define the props types separately in a `type` or `interface`:
 
+```tsx
 type ExampleProps = {
   message: string;
   color: string;
@@ -50,12 +53,8 @@ type ExampleProps = {
 
 function Example(props: ExampleProps) {
   const { message, color } = props;
-  // state - implicit type string
-
   return (
-    <div className='Example'>
-      {/* Here's my comment */}
-    </div>
+    <div className='Example'>{message} {color}</div>
   );
 }
 
@@ -65,24 +64,103 @@ export default Example;
 or:
 
 ```tsx
-import React, { useState, useEffect } from 'react';
-// import './Example.css';
-
 type ExampleProps = {
   message: string;
   color: string;
 }
 
 function Example({ message, color }: ExampleProps) {
-
   return (
-    <div className='Example'>
-      {/* Here's my comment */}
-    </div>
+    <div className='Example'>{message} {color}</div>
   );
 }
 
 export default Example;
+```
+
+The same can be done with an arrow function assignment:
+
+```tsx
+type ExampleProps = {
+  message: string;
+  color: string;
+}
+
+const Example = ({ message, color }: ExampleProps) => {
+  return (
+    <div className='Example'>{message} {color}</div>
+  );
+}
+
+export default Example;
+```
+
+With these methods we are directly annotating the props in the function parameters. This direct annotation is often preferred for its simplicity.
+
+However, you can also use a syntax that uses generic function types:
+
+```tsx
+const Example: GenericFn<T> = (arg: T) => {
+  return arg;
+};
+```
+
+For functional components, there is generic type provided by the React type definitions: `React.FC` (or `React.FunctionComponent`, which is an alias for `React.FC`). It's specifically a generic type alias for functional components in React.
+
+```tsx
+type ExampleProps = {
+  message: string;
+  color: string;
+}
+
+const Example: React.FC<ExampleProps> = ({ message, color }) => {
+  return (
+    <div className='Example'>{message} {color}</div>
+  );
+}
+
+export default Example;
+```
+
+My least favourite approach is when devs will include the prop types inline with the generic, I find this way to cluttered to read:
+
+```tsx
+const Example: React.FC<{ message: string; color: string }> = ({ message, color }) => {
+  return (
+    <div className='Example'>
+      {message} {color}
+    </div>
+  );
+};
+
+export default Example;
+```
+
+Some developers prefer using `React.FC` because:
+
+- **Explicitness**: `React.FC` explicitly marks the component as a React functional component. Could be helpful especially for new developers or in large codebases.
+- **Implicit `children` Prop**: `React.FC` automatically includes the `children` prop in your component, even if you don't explicitly define it. 
+
+## Style Properties
+
+When using inline styles in React, you can use `React.CSSProperties` to describe the object passed to the `style` prop. This type is a union of all the possible CSS properties, and is a good way to ensure you are passing valid CSS properties and to get auto-complete in your editor.
+
+```tsx
+function Example() {
+
+  const testStyle: React.CSSProperties = {
+    background: '#e9d8e9',
+    borderRadius: '3px',
+    color: '#292032',
+    padding: '.2em'
+  };
+
+  return (
+    <div className='Example'>
+      <p style={testStyle}>Hello.</p>
+    </div>
+  );
+}
 ```
 
 ## Children
@@ -97,6 +175,8 @@ interface ModalProps {
 ```
 
 Note, that you cannot use TypeScript to describe that the children are a certain type of JSX elements, e.g. a component which only accepts `<li>` children.
+
+If you define a component using `React.FC` as shown above, then you don't need to include the children in your props type.
 
 ## State 
 
@@ -512,6 +592,80 @@ export default Example;
 
 This technique works when you have a default value - but there are occasionally cases when you do not, and in those cases `null` can feel reasonable as a default value. See the [react docs](https://react.dev/learn/typescript#typing-usecontext) for an example of this.
 
+## useMemo
+
+The useMemo Hooks will create/re-access a memorized value from a function call, re-running the function only when dependencies passed as the 2nd parameter are changed. The result of calling the Hook is inferred from the **return value from the function in the first parameter**. 
+
+```tsx
+// The type of visibleTodos is inferred from the return value of filterTodos
+const visibleTodos = useMemo(() => filterTodos(todos, filter), [todos, filter]);
+```
+
+You can be more explicit by providing a type argument to the Hook:
+
+```tsx
+// Explicitly specifying the return type of useMemo as Todo[]
+  const visibleTodos = useMemo<Todo[]>(() => filterTodos(todos, filter), [todos, filter]);
+```
+
+Here's a fleshed out example:
+
+```tsx
+type Todo = {
+  id: number;
+  text: string;
+  completed: boolean;
+};
+
+type TodoListProps = {
+  todos: Todo[];
+  filter: string;
+};
+
+function filterTodos(todos: Todo[], filter: string): Todo[] {
+  // Implementation of filtering logic
+  return todos.filter((todo) => todo.text.includes(filter));
+}
+
+const TodoList = ({ todos, filter }: TodoListProps) => {
+  // Explicitly specifying the return type of useMemo as Todo[]
+  const visibleTodos = useMemo<Todo[]>(() => filterTodos(todos, filter), [todos, filter]);
+
+  return (
+    <ul className='TodoList'>
+      {visibleTodos.map((todo) => <li>{todo.text}</li>)}
+    </ul>
+  );
+};
+```
+
+## use Callback
+
+Like `useMemo`, the function’s type is inferred from the return value of the function in the first parameter, and you can be more explicit by providing a type argument to the Hook. 
+
+When working in TypeScript strict mode `useCallback` requires adding types for the parameters in your callback. This is because the type of the callback is inferred from the return value of the function, and without parameters the type cannot be fully understood.
+
+Depending on your code-style preferences, you could use the `*EventHandler` functions from the React types (see [Events](#events) below) to provide the type for the event handler at the same time as defining the callback:
+
+```tsx
+import { useState, useCallback } from 'react';
+
+export default function Form() {
+  const [value, setValue] = useState("Change me");
+
+  const handleChange = useCallback<React.ChangeEventHandler<HTMLInputElement>>((e) => {
+    setValue(e.currentTarget.value);
+  }, [setValue])
+  
+  return (
+    <>
+      <input value={value} onChange={handleChange} />
+      <p>Value: {value}</p>
+    </>
+  );
+}
+```
+
 ## Arrow function syntax with generics 
 
 Normally we would write a function with generics like this:
@@ -581,7 +735,7 @@ function Example({ message, color }: ExampleProps) {
   const [name, setName] = useState('');
 
   const updateName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
+    setName(e.currentTarget.value);
   };
 
   const onSubmit = () => {
@@ -601,6 +755,8 @@ export default Example;
 ```
 
 ### Events 
+
+See the [full list of events provided in the React types](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/b580df54c0819ec9df62b0835a315dd48b8594a9/types/react/index.d.ts#L1247C1-L1373).
 
 Event Type | Description
 :--------- | :----------
