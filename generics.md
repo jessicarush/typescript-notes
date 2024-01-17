@@ -11,7 +11,7 @@ Generics are an extra layer of abstraction over regular types. They allow you to
 - [Generic constraints](#generic-constraints)
 - [Multiple types](#multiple-types)
 - [Generic classes](#generic-classes)
-- [Generic types and interfaces](#generic-types-and-interfaces)
+- [Generic functions](#generic-functions)
 
 <!-- tocstop -->
 
@@ -24,7 +24,7 @@ Generics use a type variable, like `<T>` or `<Type>`, as a placeholder. This all
 function someFunction<T>(arg: T) {
   console.log(arg);
 }
-// Arrow function sytanx (function expression)
+// Arrow function syntax (function expression)
 const otherFunction = <T>(arg: T) => {
   console.log(arg);
 };
@@ -280,7 +280,7 @@ withIds.addItem({ id: '123' });
 const firstId = withIds.getItemByIndex(0); // { id: '123' }
 ```
 
-## Generic types and interfaces
+## Generic functions
 
 So how do we identify the type of a generic function? For example:
 
@@ -289,7 +289,7 @@ function identity<Type>(arg: Type): Type {
   return arg;
 }
 
-let myIdentity = identity; // inferred
+const myIdentity = identity; // inferred
 ```
 
 The same way you would identify a non-generic function. We need to define its *call signature*: the function's parameters and return type. We usually do this using the *arrow function syntax* `() => void`:
@@ -299,13 +299,13 @@ function identity<Type>(arg: Type): Type {
   return arg;
 }
 
-let myIdentity: <Type>(arg: Type) => Type = identity;
+const myIdentity: <Type>(arg: Type) => Type = identity;
 ```
 
 However, you also have the option of defining the call signature using *object literal syntax*:
 
 ```typescript
-let myIdentity: { <Type>(arg: Type): Type } = identity;
+const myIdentity: { <Type>(arg: Type): Type } = identity;
 ```
 
 This leads us to generic interfaces. The object literal syntax from the previous example can be moved into an interface:
@@ -319,7 +319,7 @@ interface GenericIdentityFn {
   <Type>(arg: Type): Type;
 }
 
-let myIdentity: GenericIdentityFn = identity;
+const myIdentity: GenericIdentityFn = identity;
 ```
 
 This is an interface with a generic call signature. The interface itself is not generic, but the function within it is.
@@ -335,7 +335,15 @@ interface GenericIdentityFn<Type> {
   (arg: Type): Type;
 }
 
-let numberIdentity: GenericIdentityFn<number> = identity;
+const numberIdentity: GenericIdentityFn<number> = identity;
+```
+
+So we end up with this pattern:
+
+```tsx
+const Example: GenericFn<T> = (arg: T) => {
+  return arg;
+};
 ```
 
 Deciding where to place generic type parameters can change how the generic behavior is applied and interpreted in your code. 
