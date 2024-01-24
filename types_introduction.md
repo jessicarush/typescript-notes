@@ -10,6 +10,7 @@
 - [Functions](#functions)
 - [Any and unknown](#any-and-unknown)
 - [Type aliases](#type-aliases)
+- [Practical examples](#practical-examples)
 - [Type interfaces](#type-interfaces)
 - [Function type](#function-type)
 - [void](#void)

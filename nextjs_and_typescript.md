@@ -6,6 +6,21 @@
 
 <!-- toc -->
 
+- [Introduction](#introduction)
+- [TypeScript Plugin](#typescript-plugin)
+- [Special files](#special-files)
+  * [next.config.js](#nextconfigjs)
+  * [middleware.ts](#middlewarets)
+  * [app/layout.tsx](#applayouttsx)
+  * [app/page.tsx](#apppagetsx)
+  * [app/error.tsx](#apperrortsx)
+  * [app/global-error.tsx](#appglobal-errortsx)
+  * [app/not-found.tsx](#appnot-foundtsx)
+  * [app/sitemap.ts](#appsitemapts)
+  * [app/api/route.ts](#appapiroutets)
+- [Ignoring TypeScript Errors](#ignoring-typescript-errors)
+- [Custom Type Declarations](#custom-type-declarations)
+
 <!-- tocstop -->
 
 ## Introduction
