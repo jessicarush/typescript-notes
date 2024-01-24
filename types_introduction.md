@@ -344,6 +344,33 @@ greetUser(user2);  // Hi Bob; Hello
 greetUser(admin);  // Hi Mary
 ```
 
+## Practical examples
+
+This:
+
+```ts 
+const links: Array<{name: string, href: string}> = [
+  { name: 'one', href: '/one' },
+  { name: 'two', href: '/two' },
+  { name: 'three', href: '/three' }
+];
+```
+
+is the same as this: 
+
+```ts
+type Link = {
+  name: string;
+  href: string;
+};
+
+const links: Link[] = [
+  { name: 'one', href: '/one' },
+  { name: 'two', href: '/two' },
+  { name: 'three', href: '/three' }
+];
+```
+
 ## Type interfaces
 
 Type interfaces are similar to type aliases, but there are a few differences:
