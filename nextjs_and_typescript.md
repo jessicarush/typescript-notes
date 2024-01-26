@@ -20,6 +20,7 @@
   * [app/api/route.ts](#appapiroutets)
 - [Ignoring TypeScript Errors](#ignoring-typescript-errors)
 - [Custom Type Declarations](#custom-type-declarations)
+- [notes](#notes)
 
 <!-- tocstop -->
 
@@ -300,3 +301,7 @@ You might be tempted to add your custom declarations to `next-env.d.ts`. However
   "exclude": ["node_modules"]
 }
 ```
+
+## notes
+
+When working with data coming from a database, you can manually declare the data types, but for better type-safety, Next.js recommends using [Prisma](https://www.prisma.io/), which automatically generates types based on your database schema.
