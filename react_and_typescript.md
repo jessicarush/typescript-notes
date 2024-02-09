@@ -234,6 +234,30 @@ type RequestState =
 const [requestState, setRequestState] = useState<RequestState>({ status: 'idle' });
 ```
 
+## Button components
+
+If you build a button component that should accept any valid button attribute as a prop:
+
+```tsx
+import clsx from 'clsx';
+import styles from './Button.module.css';
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+}
+
+export function Button({ children, className, ...rest }: ButtonProps) {
+  return (
+    <button
+      {...rest}
+      className={clsx(styles.default, className)}
+    >
+      {children}
+    </button>
+  );
+}
+```
+
 ## useReducer 
 
 The types for the reducer function are inferred from the initial state. You can optionally provide a type argument to the useReducer call to provide a type for the state, but it is often better to set the type on the initial state instead.
