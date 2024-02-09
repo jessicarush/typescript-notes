@@ -41,7 +41,7 @@ See [react_and_typescript.md](react_and_typescript.md) for React specific TypeSc
 
 Next.js recommends that you use their [TypeScript Plugin](https://nextjs.org/docs/app/building-your-application/configuring/typescript#typescript-plugin) for your editor. **In order to use it, your project has to be open in its own workspace (at the root) in vscode**.
 
-In the command palette search for `TypeScript: Select TypeScript Version` and choose `Use Workspace Version` as opposed to the vscode version. Using the workspace version form `node_modules` gives you more type checking, hover information and lists of options for Next.js things like route segment config options:
+In the command palette (`⇧⌘P`) search for `TypeScript: Select TypeScript Version` and choose `Use Workspace Version` as opposed to the vscode version. Using the workspace version form `node_modules` gives you more type checking, hover information and lists of options for Next.js things like route segment config options:
 
 ```jsx
 export const dynamicParams = false;
