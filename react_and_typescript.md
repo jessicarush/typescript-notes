@@ -105,7 +105,7 @@ const Example: GenericFn<T> = (arg: T) => {
 };
 ```
 
-For functional components, there is generic type provided by the React type definitions: `React.FC` (or `React.FunctionComponent`, which is an alias for `React.FC`). It's specifically a generic type alias for functional components in React.
+For functional components, there is generic type provided by the React type definitions: `React.FC` (or `React.FunctionComponent`, which is an alias for `React.FC`). The `React.FC` generic type alias is used to type a constant that holds a function (whether expressed as an arrow function or a named function expression).
 
 ```tsx
 type ExampleProps = {
