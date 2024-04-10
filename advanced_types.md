@@ -560,6 +560,8 @@ type SanitizedEmployee = Omit<Employee, 'employedAt'>;
 // }
 ```
 
+To omit multiple properties use a pipe (`|`): `Omit<Employee, 'employedAt' | 'salary'>;`.
+
 You can also use Omit to replace a property:
 
 ```typescript
