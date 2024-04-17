@@ -13,12 +13,14 @@
 - [Style Properties](#style-properties)
 - [Children](#children)
 - [State](#state)
+- [Button components](#button-components)
 - [useReducer](#usereducer)
 - [useContext](#usecontext)
 - [useMemo](#usememo)
-- [use Callback](#use-callback)
+- [useCallback](#usecallback)
 - [Arrow function syntax with generics](#arrow-function-syntax-with-generics)
 - [Forms and events](#forms-and-events)
+- [useRef](#useref)
   * [Events](#events)
 - [HTML element interfaces](#html-element-interfaces)
 
@@ -663,7 +665,7 @@ const TodoList = ({ todos, filter }: TodoListProps) => {
 };
 ```
 
-## use Callback
+## useCallback
 
 Like `useMemo`, the function’s type is inferred from the return value of the function in the first parameter, and you can be more explicit by providing a type argument to the Hook. 
 
@@ -776,6 +778,50 @@ function Example({ message, color }: ExampleProps) {
 }
 
 export default Example;
+```
+
+## useRef
+
+There may be situations where you need to tell `useRef` what type of element it's being used on by giving it an [html element interface](#html-element-interfaces).
+
+For example, see this modal:
+
+```jsx
+function Modal({ children }) {
+  const overlay = useRef();
+  // ...
+
+  const onClick = useCallback((e) => {
+    if (e.target === overlay.current) closeModal();
+  }, [closeModal, overlay]);
+
+  return (
+    <div ref={overlay} onClick={onClick}>
+      {children}
+      <button onClick={closeModal}>close</button>
+    </div>
+  );
+};
+```
+
+In typescript:
+
+```tsx
+function Modal({ children }) {
+  const overlay = useRef<HTMLDivElement>(null);
+  // ...
+
+  const onClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === overlay.current) closeModal();
+  }, [closeModal, overlay]);
+
+  return (
+    <div ref={overlay} onClick={onClick}>
+      {children}
+      <button onClick={closeModal}>close</button>
+    </div>
+  );
+};
 ```
 
 ### Events 
