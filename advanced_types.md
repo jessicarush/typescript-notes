@@ -659,3 +659,72 @@ const cats: Record<CatName, CatInfo> = {
 };
 ```
 
+For a simpler, practical example, I had a `jsx` component that I was converting to a `tsx` component. In it, I am accepting some props and setting some css variables based on those props by dynamically adding them to an object:
+
+```jsx
+export default function Button(props) {
+  const {
+    id,
+    color,
+    hoverColor,
+    uppercase,
+    variant = 'filled',
+    children,
+    onClick,
+    ...rest
+  } = props;
+
+  const styles = {};
+
+  if (typeof color === 'string') {
+    styles[`--${variant}-color`] = color; // <-- typescript says no!
+  }
+  // ...
+```
+
+When converting to typescript, it gets mad because it thinks `styles` should be an empty object. To tell typescript that I want this object to contain key value pairs that are strings (e.g. `'--filled-color': '#000'`), I use `Record<string, string>`:
+
+```tsx
+interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color'> {
+  id: string;
+  color?: string | string[];
+  hoverColor?: string | string[];
+  uppercase?: boolean;
+  variant?: 'outline' | 'underline' | 'filled';
+}
+
+export default function Button(props: ButtonProps) {
+  const {
+    id,
+    color,
+    hoverColor,
+    uppercase,
+    variant = 'filled',
+    children,
+    onClick,
+    ...rest
+  } = props;
+
+  const styles: Record<string, string> = {};
+
+  if (typeof color === 'string') {
+    styles[`--${variant}-color`] = color;
+  }
+  // ...
+```
+
+Btw if you're wondering about the `extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color'>` part: 
+
+Extending `<ButtonHTMLAttributes<HTMLButtonElement>` (where `ButtonHTMLAttributes` is imported from `react`), is a standard way to include all the standard Button attributes. This way I can accept props like `children` and `onClick` without specifically adding them to my interface. You'll notice I'm also using the `...rest` variable. This collects all other properties that haven't been destructured explicitly into a new object. I then apply that to my button:
+
+```tsx
+<button
+  // ...
+  onClick={onClick}
+  style={styles}
+  {...rest}>
+    {children}
+</button>
+```
+
+Lastly, I'm omitting the color attribute from the `ButtonHTMLAttributes` because technically the color attribute is deprecated and I happen to be using it differently, as in I am accepting a string or and array of strings so I need to override the old one for typescript to stfu.
