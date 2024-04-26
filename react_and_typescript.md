@@ -21,7 +21,8 @@
 - [Arrow function syntax with generics](#arrow-function-syntax-with-generics)
 - [Forms and events](#forms-and-events)
 - [useRef](#useref)
-  * [Events](#events)
+- [forwardRef](#forwardref)
+- [Events](#events)
 - [HTML element interfaces](#html-element-interfaces)
 
 <!-- tocstop -->
@@ -824,7 +825,43 @@ function Modal({ children }) {
 };
 ```
 
-### Events 
+## forwardRef 
+
+When using the `forwardRef` function to pass down a `ref`, it has to be typed using generics and the `ref` type has to come first even though the the args are in the opposite order:
+
+```tsx
+const MyComponent = forwardRef<HTMLDivElement, MyProps>((props, ref) => {
+  // Now TypeScript knows `ref` is specifically a `Ref<HTMLDivElement>`
+  // and `props` are exactly `MyComponentProps`
+  return <div ref={ref}>Hello</div>;
+});
+MyComponent.displayName = 'MyComponent';
+
+// or using a named function
+const MyComponent = forwardRef<HTMLDivElement, MyProps>(function MyComponent(props, ref) {
+  return <div ref={ref}>Hello</div>;
+});
+```
+
+Here's an example from [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/forward_and_create_ref/):
+
+```tsx
+import { forwardRef, ReactNode } from "react";
+
+interface Props {
+  children?: ReactNode;
+  type: "submit" | "button";
+}
+type Ref = HTMLButtonElement;
+
+export const FancyButton = forwardRef<Ref, Props>((props, ref) => (
+  <button ref={ref} className="MyClassName" type={props.type}>
+    {props.children}
+  </button>
+));
+```
+
+## Events 
 
 See the [full list of events provided in the React types](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/b580df54c0819ec9df62b0835a315dd48b8594a9/types/react/index.d.ts#L1247C1-L1373).
 
