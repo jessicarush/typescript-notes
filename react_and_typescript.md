@@ -237,6 +237,63 @@ type RequestState =
 const [requestState, setRequestState] = useState<RequestState>({ status: 'idle' });
 ```
 
+### useState setter function type
+
+If you are passing the values returned from `useState` to another component, you have to options:
+
+```tsx
+'use client';
+
+import { useState } from 'react';
+import Drawer from '@/app/_ui/drawer';
+
+export default function DashboardMenu() {
+  const [isOpen, setIsOpen] = useState(true);
+  return (
+      <Drawer open={isOpen} setIsOpen={setIsOpen}>
+        <p>content</p>
+      </Drawer>
+    </>
+  );
+}
+
+type DrawerProps = {
+  children?: React.ReactNode;
+  open: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  // setIsOpen: (open: boolean) => void;
+};
+
+export default function Drawer({ children }: DrawerProps) {
+  return <div className=''>{children}</div>;
+}
+```
+
+`setIsOpen` can be defined as `setIsOpen: (open: boolean) => void;` or `setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;`
+
+Similarities:
+
+- Both are function types that don't return a value (void).
+- Both are intended to be used for updating a boolean state.
+
+Differences:
+
+`React.Dispatch<React.SetStateAction<boolean>>`:
+
+This is the exact type returned by useState for a boolean state.
+It's more flexible and allows for both direct value updates and functional updates.
+It can accept either a boolean value or a function that receives the previous state and returns a new boolean value.
+Example usages:
+`setIsOpen(true)` or `setIsOpen(prev => !prev)`
+
+
+`(open: boolean) => void`:
+
+This is a more specific function type that only accepts a boolean parameter.
+It's simpler and more straightforward to understand at a glance.
+It only allows for direct value updates, not functional updates.
+Example usage: setIsOpen(true)
+
 ## Button components
 
 If you build a button component that should accept any valid button attribute as a prop:
