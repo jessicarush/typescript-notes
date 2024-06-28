@@ -166,6 +166,12 @@ function Example() {
 }
 ```
 
+Note if you're setting css variables this way you will also need to use an *assertion* because TypeScript is expecting valid css property names:
+
+```tsx
+  const cssVariables: React.CSSProperties = { '--width': width } as React.CSSProperties;
+```
+
 ## Children
 
 There are two common paths to describing the children of a component. The first is to use the `React.ReactNode` type, which is a union of all the possible types that can be passed as children in JSX. The second is to use the `React.ReactElement` type, which is only JSX elements and not JavaScript primitives like strings or numbers:
