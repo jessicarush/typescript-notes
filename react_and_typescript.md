@@ -289,16 +289,16 @@ Differences:
 This is the exact type returned by useState for a boolean state.
 It's more flexible and allows for both direct value updates and functional updates.
 It can accept either a boolean value or a function that receives the previous state and returns a new boolean value.
-Example usages:
-`setIsOpen(true)` or `setIsOpen(prev => !prev)`
 
+Example usages: `setIsOpen(true)` or `setIsOpen(prev => !prev)`
 
 `(open: boolean) => void`:
 
 This is a more specific function type that only accepts a boolean parameter.
 It's simpler and more straightforward to understand at a glance.
 It only allows for direct value updates, not functional updates.
-Example usage: setIsOpen(true)
+
+Example usage: `setIsOpen(true)`
 
 ## Button components
 
